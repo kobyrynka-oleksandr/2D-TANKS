@@ -220,8 +220,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e74df7040e93ab42ab8a858156a789e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KillerAI
-  m_FireRate: 1.5
-  m_RotateSpeed: 120
+  m_FireRate: 2.5
+  m_RotateSpeed: 80
   m_MoveSpeed: 3.5
   m_StopDistance: 4
   m_ShootRange: 8

@@ -385,8 +385,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dc9a9cab4640664fa16d07909147b76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoutAI
-  m_FireRate: 1.5
-  m_RotateSpeed: 120
+  m_FireRate: 2.5
+  m_RotateSpeed: 80
   m_MoveSpeed: 4
   m_ObstacleMask:
     serializedVersion: 2

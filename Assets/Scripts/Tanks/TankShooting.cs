@@ -12,8 +12,7 @@ public class PlayerShooting : MonoBehaviour
     [SerializeField] private float m_MaxDamage = 100f;
     [SerializeField] private float m_ExplosionRadius = 1.5f;
 
-    //[SerializeField] private AudioSource m_ShootingAudio;
-    //[SerializeField] private AudioClip m_FireClip;
+    [SerializeField] private AudioSource m_ShootingAudio;
 
     private TankInputUser m_InputUser;
     private InputAction m_FireAction;
@@ -62,11 +61,8 @@ public class PlayerShooting : MonoBehaviour
         explosion.m_ExplosionRadius = m_ExplosionRadius;
         explosion.m_Shooter = gameObject;
 
-        //if (m_ShootingAudio && m_FireClip)
-        //{
-        //    m_ShootingAudio.clip = m_FireClip;
-        //    m_ShootingAudio.Play();
-        //}
+        m_ShootingAudio.Play();
+
         m_CooldownTimer = m_ShotCooldown;
     }
 }
