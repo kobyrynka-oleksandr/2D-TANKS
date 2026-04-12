@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(TargetHealth))]
-[RequireComponent(typeof(PlayerShooting))]
+[RequireComponent(typeof(TankShooting))]
 public abstract class EnemyAI : MonoBehaviour
 {
     [SerializeField] protected float m_FireRate = 1.5f;
@@ -11,14 +11,14 @@ public abstract class EnemyAI : MonoBehaviour
     [SerializeField] protected float m_MoveSpeed = 3.5f;
 
     protected NavMeshAgent m_Agent;
-    protected PlayerShooting m_Shooting;
+    protected TankShooting m_Shooting;
     protected float m_FireTimer;
     protected bool m_IsAiming = false;
 
     protected virtual void Awake()
     {
         m_Agent = GetComponent<NavMeshAgent>();
-        m_Shooting = GetComponent<PlayerShooting>();
+        m_Shooting = GetComponent<TankShooting>();
         m_Shooting.m_IsComputerControlled = true;
 
         m_Agent.updateRotation = false;

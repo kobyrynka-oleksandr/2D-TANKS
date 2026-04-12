@@ -9,7 +9,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject[] m_EnemyPrefabs;
     [SerializeField] private SpawnPoint[] m_SpawnPoints;
-    [SerializeField] private float m_StageCooldown = 2f;
+    [SerializeField] private float m_StageCooldown = 4f;
+
+    [SerializeField] private BonusSpawner m_BonusSpawner;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI m_StageText;
@@ -61,6 +63,7 @@ public class GameManager : MonoBehaviour
 
         UpdateStageUI();
         SpawnStage();
+        m_BonusSpawner?.SpawnForStage();
     }
 
     private void SpawnStage()
@@ -87,6 +90,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator NextStageDelay()
     {
+        m_BonusSpawner?.ClearBonuses();
         yield return new WaitForSeconds(m_StageCooldown);
         StartNextStage();
     }
@@ -99,6 +103,7 @@ public class GameManager : MonoBehaviour
     private void OnLoss()
     {
         m_GameOver = true;
+        m_BonusSpawner?.ClearBonuses();
 
         m_GUI.SetActive(false);
         m_FinalScore.text = m_CurrentStage.ToString();

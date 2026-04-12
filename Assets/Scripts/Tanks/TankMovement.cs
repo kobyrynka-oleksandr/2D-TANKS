@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-5)]
@@ -16,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     private float m_MovementInputValue;
     private float m_TurnInputValue;
 
+    private float m_BaseSpeed;
+    private Coroutine m_SpeedCoroutine;
+
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
@@ -27,6 +31,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        m_BaseSpeed = m_Speed;
+
         m_MoveAction = m_InputUser.ActionAsset.FindAction("Vertical");
         m_TurnAction = m_InputUser.ActionAsset.FindAction("Horizontal");
 
@@ -68,5 +74,21 @@ public class PlayerMovement : MonoBehaviour
     {
         float turnAmount = -m_TurnInputValue * m_TurnSpeed * Time.fixedDeltaTime;
         m_Rigidbody.MoveRotation(m_Rigidbody.rotation + turnAmount);
+    }
+
+    public void ApplySpeedBonus(float multiplier, float duration)
+    {
+        if (m_SpeedCoroutine != null) StopCoroutine(m_SpeedCoroutine);
+        m_SpeedCoroutine = StartCoroutine(SpeedBonusRoutine(multiplier, duration));
+    }
+
+    private IEnumerator SpeedBonusRoutine(float multiplier, float duration)
+    {
+        m_Speed = m_BaseSpeed * multiplier;
+        BonusUIManager.Instance?.ShowSpeed();
+        yield return new WaitForSeconds(duration);
+        m_Speed = m_BaseSpeed;
+        BonusUIManager.Instance?.HideSpeed();
+        m_SpeedCoroutine = null;
     }
 }

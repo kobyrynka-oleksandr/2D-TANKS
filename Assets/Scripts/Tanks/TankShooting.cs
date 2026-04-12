@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-5)]
-public class PlayerShooting : MonoBehaviour
+public class TankShooting : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D m_ShellPrefab;
     [SerializeField] private Transform m_FireTransform;
@@ -14,11 +15,16 @@ public class PlayerShooting : MonoBehaviour
 
     [SerializeField] private AudioSource m_ShootingAudio;
 
+    public float DamageMultiplier { get; private set; } = 1f;
+
+    public bool m_IsComputerControlled { get; set; } = false;
+
     private TankInputUser m_InputUser;
     private InputAction m_FireAction;
     private float m_CooldownTimer;
 
-    public bool m_IsComputerControlled { get; set; } = false;
+    private Coroutine m_DamageCoroutine;
+
 
     private void Awake()
     {
@@ -57,12 +63,28 @@ public class PlayerShooting : MonoBehaviour
         shell.linearVelocity = (Vector2)m_FireTransform.up * m_ShellSpeed;
 
         ShellExplosion2D explosion = shell.GetComponent<ShellExplosion2D>();
-        explosion.m_MaxDamage = m_MaxDamage;
+        explosion.m_MaxDamage = m_MaxDamage * DamageMultiplier;
         explosion.m_ExplosionRadius = m_ExplosionRadius;
         explosion.m_Shooter = gameObject;
 
         m_ShootingAudio.Play();
 
         m_CooldownTimer = m_ShotCooldown;
+    }
+
+    public void ApplyDoubleDamageBonus(float duration)
+    {
+        if (m_DamageCoroutine != null) StopCoroutine(m_DamageCoroutine);
+        m_DamageCoroutine = StartCoroutine(DoubleDamageRoutine(duration));
+    }
+
+    private IEnumerator DoubleDamageRoutine(float duration)
+    {
+        DamageMultiplier = 2f;
+        BonusUIManager.Instance?.ShowDoubleDmg();
+        yield return new WaitForSeconds(duration);
+        DamageMultiplier = 1f;
+        BonusUIManager.Instance?.HideDoubleDmg();
+        m_DamageCoroutine = null;
     }
 }
