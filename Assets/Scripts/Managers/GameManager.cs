@@ -37,6 +37,11 @@ public class GameManager : MonoBehaviour
 
         m_Player = GameObject.FindWithTag("Player")?.GetComponent<TargetHealth>();
         m_Flag = GameObject.FindWithTag("Flag")?.GetComponent<TargetHealth>();
+
+        MobileUIControl.Instance?.Show();
+
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
     }
 
     private void OnEnable()
@@ -110,5 +115,7 @@ public class GameManager : MonoBehaviour
         m_GameOverPanel.SetActive(true);
 
         Time.timeScale = 0f;
+
+        MobileUIControl.Instance?.Hide();
     }
 }

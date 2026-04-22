@@ -17,11 +17,13 @@ public class MobileUIControl : MonoBehaviour
     {
         Instance = this;
 
+#if UNITY_ANDROID
         m_Control = GetComponentInChildren<OnScreenControl>();
-        if (AutoDisableOnNonMobilePlatform && !Application.isMobilePlatform)
-        {
-            gameObject.SetActive(false);
-        }
+#endif
+
+#if !UNITY_ANDROID
+        gameObject.SetActive(false);
+#endif
     }
 
     public void Show()
