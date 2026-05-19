@@ -14,13 +14,17 @@ public class LobbyMenuUI : MonoBehaviour
     private void OnEnable()
     {
         if (InstanceFinder.ClientManager != null)
+        {
             InstanceFinder.ClientManager.OnClientConnectionState += OnConnectionState;
+        }
     }
 
     private void OnDisable()
     {
         if (InstanceFinder.ClientManager != null)
+        {
             InstanceFinder.ClientManager.OnClientConnectionState -= OnConnectionState;
+        }
     }
 
     public void OnCreateClicked()
@@ -32,7 +36,10 @@ public class LobbyMenuUI : MonoBehaviour
     public void OnJoinClicked()
     {
         string address = m_AddressInput.text;
-        if (string.IsNullOrEmpty(address)) address = "localhost";
+        if (string.IsNullOrEmpty(address))
+        {
+            address = "localhost";
+        }
         m_StatusText.text = "Connecting...";
         m_RoomManager.JoinRoom(address);
     }

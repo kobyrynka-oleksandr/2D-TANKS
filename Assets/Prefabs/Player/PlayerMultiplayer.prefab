@@ -108,12 +108,12 @@ GameObject:
   - component: {fileID: 4914455930813558005}
   - component: {fileID: 5702138573062350505}
   - component: {fileID: 6138766377143949893}
-  - component: {fileID: 1793900831686066326}
-  - component: {fileID: 8968203783343689946}
   - component: {fileID: -3321445969596316984}
+  - component: {fileID: -1361018979892305799}
+  - component: {fileID: 8968203783343689946}
+  - component: {fileID: 2055963728667195585}
   - component: {fileID: 8099292290965377604}
   - component: {fileID: 2288764474794220666}
-  - component: {fileID: 2055963728667195585}
   m_Layer: 7
   m_Name: PlayerMultiplayer
   m_TagString: Player
@@ -357,7 +357,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1793900831686066326
+--- !u!114 &-3321445969596316984
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -366,10 +366,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 2721737195374121232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dbbd79aec5778e459e20e69e5ef6585, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e2a5a2ffc07a8e438b2d747868ebf82, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
-  m_ShellPrefab: {fileID: 4317326738165710321, guid: efd0a52345fcdf144a27394c19ba4cc0, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementNet
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 8099292290965377604}
+  _networkObjectCache: {fileID: 8099292290965377604}
+  m_Speed: 6.5
+  m_TurnSpeed: 100
+--- !u!114 &-1361018979892305799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2721737195374121232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f52c4d470c5e15469306b7672d1da3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TankShootingNet
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 8099292290965377604}
+  _networkObjectCache: {fileID: 8099292290965377604}
+  m_ShellPrefab: {fileID: 3955092541123211099, guid: ae23266d6fa969a45bde22da3a814a98, type: 3}
   m_FireTransform: {fileID: 5587824941431324115}
   m_ShellSpeed: 10
   m_ShotCooldown: 1
@@ -391,7 +411,7 @@ MonoBehaviour:
   m_StartingHealth: 500
   m_Slider: {fileID: 5597402956077979990}
   m_ExplosionParticles: {fileID: 6754038693418877308}
---- !u!114 &-3321445969596316984
+--- !u!114 &2055963728667195585
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -400,14 +420,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2721737195374121232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e2a5a2ffc07a8e438b2d747868ebf82, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f2d969717cc4014ab2493f84cf8f640, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementNet
-  _componentIndexCache: 255
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraBinder
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 8099292290965377604}
-  _networkObjectCache: {fileID: 0}
-  m_Speed: 6.5
-  m_TurnSpeed: 100
+  _networkObjectCache: {fileID: 8099292290965377604}
+  m_VirtualCamera: {fileID: 2033166747895248788}
+  m_CameraTarget: {fileID: 7647134223436948678}
 --- !u!114 &8099292290965377604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,7 +446,11 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: -1361018979892305799}
+  - {fileID: -3321445969596316984}
+  - {fileID: 2055963728667195585}
+  - {fileID: 2288764474794220666}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -437,7 +461,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: 0
+  _initializedTimestamp: -8584223894693560505
   _localLevelOfDetailCalculationType: 0
   _useLevelOfDetail: 0
   _useRootLevelOfDetail: 1
@@ -456,15 +480,15 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 8
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 5682437723902007512
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
 --- !u!114 &2288764474794220666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -477,9 +501,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: FishNet.Runtime::FishNet.Component.Transforming.NetworkTransform
-  _componentIndexCache: 255
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 8099292290965377604}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 8099292290965377604}
   _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:
@@ -511,23 +535,6 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
---- !u!114 &2055963728667195585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2721737195374121232}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f2d969717cc4014ab2493f84cf8f640, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraBinder
-  _componentIndexCache: 255
-  _addedNetworkObject: {fileID: 8099292290965377604}
-  _networkObjectCache: {fileID: 0}
-  m_VirtualCamera: {fileID: 2033166747895248788}
-  m_CameraTarget: {fileID: 7647134223436948678}
 --- !u!1 &3152337691117866764
 GameObject:
   m_ObjectHideFlags: 0

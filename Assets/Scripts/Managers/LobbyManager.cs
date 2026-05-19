@@ -38,15 +38,21 @@ public class LobbyManager : NetworkBehaviour
         m_StartButton.gameObject.SetActive(IsServerStarted);
 
         if (!IsServerStarted)
+        {
             CmdRequestPlayerList();
+        }
     }
 
     private void OnRemoteClientConnectionState(NetworkConnection conn, RemoteConnectionStateArgs args)
     {
         if (args.ConnectionState == RemoteConnectionState.Stopped)
+        {
             StartCoroutine(UpdateNextFrame());
+        }
         else
+        {
             ServerUpdateAndBroadcast();
+        }
     }
 
     private System.Collections.IEnumerator UpdateNextFrame()
@@ -82,7 +88,9 @@ public class LobbyManager : NetworkBehaviour
     private void RpcUpdatePlayerList(string[] names)
     {
         foreach (Transform child in m_ContentParent)
+        {
             Destroy(child.gameObject);
+        }
 
         m_PlayersText.text = $"Players: {names.Length}/2";
 
@@ -98,7 +106,9 @@ public class LobbyManager : NetworkBehaviour
     private void RpcSetStartButton(bool interactable)
     {
         if (IsServerStarted)
+        {
             m_StartButton.interactable = interactable;
+        }
     }
 
     [Server]
@@ -112,8 +122,12 @@ public class LobbyManager : NetworkBehaviour
     public void OnLeaveRoomButton()
     {
         if (IsServerStarted)
+        {
             InstanceFinder.ServerManager.StopConnection(true);
+        }
         else
+        {
             InstanceFinder.ClientManager.StopConnection();
+        }
     }
 }
