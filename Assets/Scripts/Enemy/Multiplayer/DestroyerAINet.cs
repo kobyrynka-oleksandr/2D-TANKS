@@ -6,21 +6,6 @@ public class DestroyerAINet : EnemyAINet
     [SerializeField] private float m_StopDistance = 6f;
     [SerializeField] private LayerMask m_ObstacleMask;
 
-    private Transform m_FlagTarget;
-    private Collider2D m_FlagCollider;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        GameObject flag = GameObject.FindWithTag("Flag");
-        if (flag != null)
-        {
-            m_FlagTarget = flag.transform;
-            m_FlagCollider = flag.GetComponent<Collider2D>();
-        }
-    }
-
     protected override void OnUpdateAI()
     {
         if (m_FlagTarget == null || !m_FlagTarget.gameObject.activeInHierarchy)

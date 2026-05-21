@@ -13,6 +13,7 @@ public class GameManagerNet : NetworkBehaviour
     [SerializeField] private float m_StageCooldown = 4f;
 
     [SerializeField] private BonusSpawner m_BonusSpawner;
+    [SerializeField] private WorldObjectsSpawnerNet m_WorldObjectsSpawner;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI m_StageText;
@@ -28,11 +29,12 @@ public class GameManagerNet : NetworkBehaviour
 
     private void Awake()
     {
-        if (Instance) 
-        { 
-            Destroy(gameObject); 
-            return; 
+        if (Instance)
+        {
+            Destroy(gameObject);
+            return;
         }
+
         Instance = this;
 
         Application.targetFrameRate = 60;
@@ -43,10 +45,13 @@ public class GameManagerNet : NetworkBehaviour
     {
         base.OnStartServer();
 
-        TargetHealth flag = GameObject.FindWithTag("Flag")?.GetComponent<TargetHealth>();
-        if (flag)
+        if (m_WorldObjectsSpawner != null && m_WorldObjectsSpawner.FlagHealth != null)
         {
-            flag.OnDeath += OnLoss;
+            m_WorldObjectsSpawner.FlagHealth.OnDeath += OnLoss;
+        }
+        else
+        {
+            Debug.LogWarning("GameManagerNet: FlagHealth not found in WorldObjectsSpawnerNet.");
         }
 
         StartNextStage();
@@ -61,6 +66,7 @@ public class GameManagerNet : NetworkBehaviour
         }
 
         m_EnemiesAlive--;
+
         if (m_EnemiesAlive <= 0)
         {
             StartCoroutine(NextStageDelay());
@@ -112,8 +118,8 @@ public class GameManagerNet : NetworkBehaviour
         {
             return;
         }
-        m_GameOver = true;
 
+        m_GameOver = true;
         m_BonusSpawner?.ClearBonuses();
         RpcShowGameOver(m_CurrentStage);
     }
@@ -121,7 +127,7 @@ public class GameManagerNet : NetworkBehaviour
     [ObserversRpc]
     private void RpcUpdateStageUI(int stage)
     {
-        if (m_StageText)
+        if (m_StageText != null)
         {
             m_StageText.text = $"Stage: {stage}";
         }
@@ -130,8 +136,19 @@ public class GameManagerNet : NetworkBehaviour
     [ObserversRpc]
     private void RpcShowGameOver(int finalStage)
     {
-        m_GUI.SetActive(false);
-        m_FinalScore.text = finalStage.ToString();
-        m_GameOverPanel.SetActive(true);
+        if (m_GUI != null)
+        {
+            m_GUI.SetActive(false);
+        }
+
+        if (m_FinalScore != null)
+        {
+            m_FinalScore.text = finalStage.ToString();
+        }
+
+        if (m_GameOverPanel != null)
+        {
+            m_GameOverPanel.SetActive(true);
+        }
     }
 }

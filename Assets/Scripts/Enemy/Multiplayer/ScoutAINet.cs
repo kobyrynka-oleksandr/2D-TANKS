@@ -14,22 +14,7 @@ public class ScoutAINet : EnemyAINet
     [SerializeField] private float m_FlagStopDistance = 6f;
     [SerializeField] private float m_FlagShootRange = 8f;
 
-    private Transform m_FlagTarget;
-    private Collider2D m_FlagCollider;
-
     private bool m_IsChasing;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        GameObject flag = GameObject.FindWithTag("Flag");
-        if (flag != null)
-        {
-            m_FlagTarget = flag.transform;
-            m_FlagCollider = flag.GetComponent<Collider2D>();
-        }
-    }
 
     protected override void OnUpdateAI()
     {

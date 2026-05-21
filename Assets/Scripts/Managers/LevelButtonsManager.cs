@@ -24,7 +24,7 @@ public class LevelButtonsManager : MonoBehaviour
     {
         if (!InstanceFinder.IsServerStarted) return;
 
-        SceneLoadData sld = new SceneLoadData("City Multiplayer");
+        SceneLoadData sld = new SceneLoadData("CityMultiplayer");
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
     }

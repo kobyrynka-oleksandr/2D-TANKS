@@ -11,10 +11,18 @@ public abstract class EnemyAINet : NetworkBehaviour
     [SerializeField] protected float m_RotateSpeed = 120f;
     [SerializeField] protected float m_MoveSpeed = 3.5f;
 
+    [Header("Target Search")]
+    [SerializeField] private float m_FlagSearchInterval = 0.5f;
+
     protected NavMeshAgent m_Agent;
     protected TankShootingNet m_Shooting;
     protected float m_FireTimer;
     protected bool m_IsAiming;
+
+    protected Transform m_FlagTarget;
+    protected Collider2D m_FlagCollider;
+
+    private float m_FlagSearchTimer;
 
     protected virtual void Awake()
     {
@@ -36,6 +44,7 @@ public abstract class EnemyAINet : NetworkBehaviour
         }
 
         m_FireTimer += Time.deltaTime;
+        UpdateFlagTarget();
         OnUpdateAI();
 
         if (!m_IsAiming)
@@ -45,6 +54,29 @@ public abstract class EnemyAINet : NetworkBehaviour
     }
 
     protected abstract void OnUpdateAI();
+
+    protected void UpdateFlagTarget()
+    {
+        if (m_FlagTarget != null && m_FlagTarget.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        m_FlagSearchTimer -= Time.deltaTime;
+        if (m_FlagSearchTimer > 0f)
+        {
+            return;
+        }
+
+        m_FlagSearchTimer = m_FlagSearchInterval;
+
+        GameObject flag = GameObject.FindWithTag("Flag");
+        if (flag != null)
+        {
+            m_FlagTarget = flag.transform;
+            m_FlagCollider = flag.GetComponent<Collider2D>();
+        }
+    }
 
     protected bool RotateToward(Vector3 target, float speed)
     {
