@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 6138766377143949893}
   - component: {fileID: -3321445969596316984}
   - component: {fileID: -1361018979892305799}
-  - component: {fileID: 8968203783343689946}
+  - component: {fileID: 5175093142078396831}
   - component: {fileID: 2055963728667195585}
   - component: {fileID: 8099292290965377604}
   - component: {fileID: 2288764474794220666}
@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2a5a2ffc07a8e438b2d747868ebf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementNet
-  _componentIndexCache: 1
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8099292290965377604}
   _networkObjectCache: {fileID: 8099292290965377604}
   m_Speed: 6.5
@@ -386,7 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f52c4d470c5e15469306b7672d1da3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TankShootingNet
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8099292290965377604}
   _networkObjectCache: {fileID: 8099292290965377604}
   m_ShellPrefab: {fileID: 3955092541123211099, guid: ae23266d6fa969a45bde22da3a814a98, type: 3}
@@ -396,7 +396,7 @@ MonoBehaviour:
   m_MaxDamage: 100
   m_ExplosionRadius: 0.5
   m_ShootingAudio: {fileID: 6138766377143949893}
---- !u!114 &8968203783343689946
+--- !u!114 &5175093142078396831
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -405,9 +405,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2721737195374121232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00a8e52ea0e59024aafec7c49709ce26, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d8072db5349fcd4592280bd037d7e25, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TargetHealth
+  m_EditorClassIdentifier: Assembly-CSharp::TargetHealthNet
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 8099292290965377604}
+  _networkObjectCache: {fileID: 0}
   m_StartingHealth: 500
   m_Slider: {fileID: 5597402956077979990}
   m_ExplosionParticles: {fileID: 6754038693418877308}
@@ -447,8 +450,8 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
-  - {fileID: -1361018979892305799}
   - {fileID: -3321445969596316984}
+  - {fileID: -1361018979892305799}
   - {fileID: 2055963728667195585}
   - {fileID: 2288764474794220666}
   InitializedParentNetworkBehaviour: {fileID: 0}
@@ -461,7 +464,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584223894693560505
+  _initializedTimestamp: -8584223882489145099
   _localLevelOfDetailCalculationType: 0
   _useLevelOfDetail: 0
   _useRootLevelOfDetail: 1

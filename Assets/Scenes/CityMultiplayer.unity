@@ -3308,8 +3308,9 @@ GameObject:
   - component: {fileID: 569062006}
   - component: {fileID: 569062005}
   - component: {fileID: 569062004}
-  - component: {fileID: 569062007}
+  - component: {fileID: 569062010}
   - component: {fileID: 569062008}
+  - component: {fileID: 569062009}
   m_Layer: 3
   m_Name: TargetFlag
   m_TagString: Flag
@@ -3438,21 +3439,6 @@ Transform:
   - {fileID: 793676605}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &569062007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 569062003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00a8e52ea0e59024aafec7c49709ce26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TargetHealth
-  m_StartingHealth: 1000
-  m_Slider: {fileID: 118620951}
-  m_ExplosionParticles: {fileID: 793676608}
 --- !u!114 &569062008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3469,6 +3455,81 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
+--- !u!114 &569062009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569062003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FishNet.Runtime::FishNet.Object.NetworkObject
+  <IsNested>k__BackingField: 0
+  WasActiveDuringEdit: 1
+  WasActiveDuringEdit_Set1: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours: []
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  _initializedTimestamp: 0
+  _localLevelOfDetailCalculationType: 0
+  _useLevelOfDetail: 0
+  _useRootLevelOfDetail: 1
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _localReconcileCorrectionType: 2
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 65535
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 0
+  SceneId: 1912601273
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Scale: {x: 0, y: 0, z: 0}
+    IsValid: 0
+--- !u!114 &569062010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569062003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8072db5349fcd4592280bd037d7e25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetHealthNet
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 569062009}
+  _networkObjectCache: {fileID: 0}
+  m_StartingHealth: 1000
+  m_Slider: {fileID: 118620951}
+  m_ExplosionParticles: {fileID: 793676608}
 --- !u!1 &584337776
 GameObject:
   m_ObjectHideFlags: 0
@@ -64728,8 +64789,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1252898935}
-  - component: {fileID: 1252898936}
+  - component: {fileID: 1252898939}
   - component: {fileID: 1252898937}
+  - component: {fileID: 1252898938}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -64752,32 +64814,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1252898936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252898934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2b2aa885fc232b468b4f7acfd451bda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  m_EnemyPrefabs:
-  - {fileID: 4947219000563157363, guid: 5d319d50f5aa7574e9b0b50e4e93518d, type: 3}
-  - {fileID: 4953123845637424990, guid: ea1fd49a4ba538e4dbf573ca4a84f857, type: 3}
-  - {fileID: 2799048578264908390, guid: fda2272ed6b450249aca067d8dd3d5f4, type: 3}
-  m_SpawnPoints:
-  - {fileID: 1263556320}
-  - {fileID: 1832162607}
-  - {fileID: 2122057749}
-  m_StageCooldown: 4
-  m_BonusSpawner: {fileID: 293051017}
-  m_StageText: {fileID: 1730515809}
-  m_GameOverPanel: {fileID: 1975966770}
-  m_GUI: {fileID: 352240355}
-  m_FinalScore: {fileID: 1870662447}
 --- !u!114 &1252898937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64793,6 +64829,92 @@ MonoBehaviour:
   m_PauseAction: {fileID: -8519480641430305742, guid: 7e96bdd1e967f8b41bfb3938637a6b72, type: 3}
   m_PauseButton: {fileID: 1491850226}
   m_ResumeButton: {fileID: 900876658}
+--- !u!114 &1252898938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252898934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FishNet.Runtime::FishNet.Object.NetworkObject
+  <IsNested>k__BackingField: 0
+  WasActiveDuringEdit: 1
+  WasActiveDuringEdit_Set1: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours: []
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  _initializedTimestamp: 0
+  _localLevelOfDetailCalculationType: 0
+  _useLevelOfDetail: 0
+  _useRootLevelOfDetail: 1
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _localReconcileCorrectionType: 2
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 65535
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 0
+  SceneId: 1526725485
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Scale: {x: 0, y: 0, z: 0}
+    IsValid: 0
+--- !u!114 &1252898939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252898934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed278bd1951a77c459bb1d2e235d2125, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManagerNet
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 1252898938}
+  _networkObjectCache: {fileID: 0}
+  m_EnemyPrefabs:
+  - {fileID: 4947219000563157363, guid: 1b2e94134231c1d40a04fd7a3e509331, type: 3}
+  - {fileID: 4953123845637424990, guid: f6bae8dc91419504596f86a9baf04972, type: 3}
+  - {fileID: 2799048578264908390, guid: 9e6ab9c48e1f55147b709b47fe3e73b0, type: 3}
+  m_SpawnPoints:
+  - {fileID: 1263556320}
+  - {fileID: 1832162607}
+  - {fileID: 2122057749}
+  m_StageCooldown: 4
+  m_BonusSpawner: {fileID: 293051017}
+  m_StageText: {fileID: 1730515809}
+  m_GameOverPanel: {fileID: 1975966770}
+  m_GUI: {fileID: 352240355}
+  m_FinalScore: {fileID: 1870662447}
 --- !u!1 &1263556318
 GameObject:
   m_ObjectHideFlags: 0
@@ -64834,9 +64956,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1263556318}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c506abd35657704fab32109594ca20c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0fe71c30e309d6d4db5485689a053fa3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPointNet
   m_DelayBetweenSpawns: 1.5
 --- !u!1 &1292549102
 GameObject:
@@ -67113,9 +67235,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1832162605}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c506abd35657704fab32109594ca20c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0fe71c30e309d6d4db5485689a053fa3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPointNet
   m_DelayBetweenSpawns: 1.5
 --- !u!1 &1832188377
 GameObject:
@@ -68198,9 +68320,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2122057747}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c506abd35657704fab32109594ca20c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0fe71c30e309d6d4db5485689a053fa3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPointNet
   m_DelayBetweenSpawns: 1.5
 --- !u!1 &2126666812
 GameObject:

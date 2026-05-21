@@ -71,6 +71,23 @@ public class TankShootingNet : NetworkBehaviour
             return;
         }
 
+        FireInternal(position, rotation);
+    }
+
+    [Server]
+    public void FireFromAI()
+    {
+        if (Time.time < m_ServerNextFireTime)
+        {
+            return;
+        }
+
+        FireInternal(m_FireTransform.position, m_FireTransform.rotation);
+    }
+
+    [Server]
+    private void FireInternal(Vector2 position, Quaternion rotation)
+    {
         m_ServerNextFireTime = Time.time + m_ShotCooldown;
 
         Rigidbody2D shell = Instantiate(m_ShellPrefab, position, rotation);
