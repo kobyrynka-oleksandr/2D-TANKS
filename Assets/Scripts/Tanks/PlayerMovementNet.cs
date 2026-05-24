@@ -1,5 +1,7 @@
-using System.Collections;
+using FishNet.Connection;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,28 +25,44 @@ public class PlayerMovementNet : NetworkBehaviour
     private float m_BaseSpeed;
     private Coroutine m_SpeedCoroutine;
 
+    private readonly SyncVar<float> m_SpeedSync = new();
+
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_InputUser = GetComponent<TankInputUser>();
+        m_SpeedSync.OnChange += OnSpeedChanged;
+    }
+
+    private void OnDestroy()
+    {
+        m_SpeedSync.OnChange -= OnSpeedChanged;
+    }
+
+    public override void OnStartNetwork()
+    {
+        base.OnStartNetwork();
+        m_BaseSpeed = m_Speed;
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
 
-        m_BaseSpeed = m_Speed;
-
-        if (!IsOwner)
+        if (IsOwner == false)
         {
             if (m_InputUser != null)
+            {
                 m_InputUser.enabled = false;
+            }
 
             return;
         }
 
         if (m_InputUser == null)
+        {
             m_InputUser = gameObject.AddComponent<TankInputUser>();
+        }
 
         m_MoveAction = m_InputUser.ActionAsset.FindAction("Vertical");
         m_TurnAction = m_InputUser.ActionAsset.FindAction("Horizontal");
@@ -70,8 +88,10 @@ public class PlayerMovementNet : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner)
+        if (IsOwner == false)
+        {
             return;
+        }
 
         m_MovementInputValue = m_MoveAction?.ReadValue<float>() ?? 0f;
         m_TurnInputValue = m_TurnAction?.ReadValue<float>() ?? 0f;
@@ -79,8 +99,10 @@ public class PlayerMovementNet : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsOwner)
+        if (IsOwner == false)
+        {
             return;
+        }
 
         Move();
         Turn();
@@ -98,31 +120,45 @@ public class PlayerMovementNet : NetworkBehaviour
         m_Rigidbody.MoveRotation(m_Rigidbody.rotation + turnAmount);
     }
 
-    public void ApplySpeedBonus(float multiplier, float duration)
+    [Server]
+    public void ApplySpeedBonusServer(float multiplier, float duration)
     {
-        if (!IsServerInitialized && !IsOwner)
-            return;
-
         if (m_SpeedCoroutine != null)
+        {
             StopCoroutine(m_SpeedCoroutine);
+        }
 
-        m_SpeedCoroutine = StartCoroutine(SpeedBonusRoutine(multiplier, duration));
+        m_SpeedCoroutine = StartCoroutine(SpeedBonusRoutineServer(multiplier, duration));
     }
 
-    private IEnumerator SpeedBonusRoutine(float multiplier, float duration)
+    [Server]
+    private IEnumerator SpeedBonusRoutineServer(float multiplier, float duration)
     {
-        m_Speed = m_BaseSpeed * multiplier;
-
-        if (IsOwner)
-            BonusUIManager.Instance?.ShowSpeed();
+        m_SpeedSync.Value = m_BaseSpeed * multiplier;
+        TargetShowSpeedBonus(Owner);
 
         yield return new WaitForSeconds(duration);
 
-        m_Speed = m_BaseSpeed;
-
-        if (IsOwner)
-            BonusUIManager.Instance?.HideSpeed();
+        m_SpeedSync.Value = m_BaseSpeed;
+        TargetHideSpeedBonus(Owner);
 
         m_SpeedCoroutine = null;
+    }
+
+    private void OnSpeedChanged(float prev, float next, bool asServer)
+    {
+        m_Speed = next;
+    }
+
+    [TargetRpc]
+    private void TargetShowSpeedBonus(NetworkConnection conn)
+    {
+        BonusUIManager.Instance?.ShowSpeed();
+    }
+
+    [TargetRpc]
+    private void TargetHideSpeedBonus(NetworkConnection conn)
+    {
+        BonusUIManager.Instance?.HideSpeed();
     }
 }

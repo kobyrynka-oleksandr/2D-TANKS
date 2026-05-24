@@ -1895,7 +1895,7 @@ GameObject:
   - component: {fileID: 293051016}
   - component: {fileID: 293051017}
   m_Layer: 0
-  m_Name: BonusSpawnPoints
+  m_Name: BonusSpawnerNet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1927,16 +1927,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 293051015}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25af9af5a551d9a44be4de495e884207, type: 3}
+  m_Script: {fileID: 11500000, guid: eb15079edc553514fae176bc237b422e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BonusSpawner
+  m_EditorClassIdentifier: Assembly-CSharp::BonusSpawnerNet
   m_SpawnPoints:
   - {fileID: 643239888}
   - {fileID: 1337010798}
   m_BonusPrefabs:
-  - {fileID: 7826658530943052564, guid: 87d04c848383564418de22927c49d5e8, type: 3}
-  - {fileID: 8970964281202054304, guid: 3cd8d281bcb9c6a409a9e2ef7f7f963f, type: 3}
-  - {fileID: 814346168518975288, guid: 0dec4a0d099aba34c9c091fac820963e, type: 3}
+  - {fileID: -6012675201904929783, guid: 82533c83ff663fd4fb69042168d2b55c, type: 3}
+  - {fileID: 6434831465466725018, guid: db9ae30056a5c024784e1bb85b39771b, type: 3}
+  - {fileID: -3644944856025518752, guid: 32a452f6fe9ce914f8a8d7ad5779b54b, type: 3}
   m_IsAlwaysSpawnOnTwoPositions: 1
 --- !u!1 &338271716
 GameObject:
@@ -23235,6 +23235,7 @@ GameObject:
   - component: {fileID: 632519693}
   - component: {fileID: 632519694}
   - component: {fileID: 632519695}
+  - component: {fileID: 632519696}
   m_Layer: 5
   m_Name: GameUI Canvas
   m_TagString: Untagged
@@ -23380,6 +23381,21 @@ MonoBehaviour:
   m_GameOverPanel: {fileID: 1975966770}
   m_GUI: {fileID: 352240355}
   m_FinalScore: {fileID: 1870662447}
+--- !u!114 &632519696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632519687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18f1a7e576b8b394b87167cc0c32318e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PauseInputTrigger
+  m_PauseAction: {fileID: -8519480641430305742, guid: 7e96bdd1e967f8b41bfb3938637a6b72, type: 3}
+  m_PauseButton: {fileID: 1491850226}
+  m_ResumeButton: {fileID: 900876658}
 --- !u!1 &634068104
 GameObject:
   m_ObjectHideFlags: 0
@@ -23465,7 +23481,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 632519693}
         m_TargetAssemblyTypeName: LevelButtonsManager, Assembly-CSharp
-        m_MethodName: OnMenuButton
+        m_MethodName: OnMenuButtonNet
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -58563,7 +58579,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 632519693}
         m_TargetAssemblyTypeName: LevelButtonsManager, Assembly-CSharp
-        m_MethodName: OnMenuButton
+        m_MethodName: OnMenuButtonNet
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

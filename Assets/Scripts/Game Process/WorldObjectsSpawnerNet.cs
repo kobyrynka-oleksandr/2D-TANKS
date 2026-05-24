@@ -15,7 +15,7 @@ public class WorldObjectsSpawnerNet : NetworkBehaviour
     [SerializeField] private SpawnPointNet[] m_EnemySpawnPoints;
 
     [Header("Scene References")]
-    [SerializeField] private BonusSpawner m_BonusSpawner;
+    [SerializeField] private BonusSpawnerNet m_BonusSpawner;
 
     [Header("Settings")]
     [SerializeField] private int m_StartingPlayersAlive = 2;

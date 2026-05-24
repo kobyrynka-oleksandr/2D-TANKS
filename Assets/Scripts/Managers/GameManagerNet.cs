@@ -15,7 +15,7 @@ public class GameManagerNet : NetworkBehaviour
     private readonly SyncVar<bool> m_IsGameOverSync = new();
 
     private SpawnPointNet[] m_SpawnPoints;
-    private BonusSpawner m_BonusSpawner;
+    private BonusSpawnerNet m_BonusSpawner;
     private WorldObjectsSpawnerNet m_WorldObjectsSpawner;
     private int m_EnemiesAlive;
     private int m_PlayersAlive;
@@ -42,7 +42,7 @@ public class GameManagerNet : NetworkBehaviour
 
     public void Initialize(
         SpawnPointNet[] spawnPoints,
-        BonusSpawner bonusSpawner,
+        BonusSpawnerNet bonusSpawner,
         WorldObjectsSpawnerNet worldObjectsSpawner,
         int playersAlive = 2)
     {

@@ -1,3 +1,4 @@
+using FishNet.Connection;
 using FishNet.Managing.Server;
 using FishNet.Object;
 using System.Collections;
@@ -26,6 +27,7 @@ public class TankShootingNet : NetworkBehaviour
     private void Awake()
     {
         m_InputUser = GetComponent<TankInputUser>();
+
         if (m_InputUser == null)
         {
             m_InputUser = gameObject.AddComponent<TankInputUser>();
@@ -35,7 +37,8 @@ public class TankShootingNet : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-        if (!IsOwner)
+
+        if (IsOwner == false)
         {
             return;
         }
@@ -46,7 +49,7 @@ public class TankShootingNet : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || m_IsComputerControlled)
+        if (IsOwner == false || m_IsComputerControlled == true)
         {
             return;
         }
@@ -116,23 +119,40 @@ public class TankShootingNet : NetworkBehaviour
         m_ShootingAudio?.Play();
     }
 
-    public void ApplyDoubleDamageBonus(float duration)
+    [Server]
+    public void ApplyDoubleDamageBonusServer(float duration)
     {
         if (m_DamageCoroutine != null)
         {
             StopCoroutine(m_DamageCoroutine);
         }
 
-        m_DamageCoroutine = StartCoroutine(DoubleDamageRoutine(duration));
+        m_DamageCoroutine = StartCoroutine(DoubleDamageRoutineServer(duration));
     }
 
-    private IEnumerator DoubleDamageRoutine(float duration)
+    [Server]
+    private IEnumerator DoubleDamageRoutineServer(float duration)
     {
         DamageMultiplier = 2f;
-        BonusUIManager.Instance?.ShowDoubleDmg();
+        TargetShowDoubleDamageBonus(Owner);
+
         yield return new WaitForSeconds(duration);
+
         DamageMultiplier = 1f;
-        BonusUIManager.Instance?.HideDoubleDmg();
+        TargetHideDoubleDamageBonus(Owner);
+
         m_DamageCoroutine = null;
+    }
+
+    [TargetRpc]
+    private void TargetShowDoubleDamageBonus(FishNet.Connection.NetworkConnection conn)
+    {
+        BonusUIManager.Instance?.ShowDoubleDmg();
+    }
+
+    [TargetRpc]
+    private void TargetHideDoubleDamageBonus(FishNet.Connection.NetworkConnection conn)
+    {
+        BonusUIManager.Instance?.HideDoubleDmg();
     }
 }

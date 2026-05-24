@@ -57,5 +57,6 @@ public class GameOverUI : MonoBehaviour
         {
             m_GameOverPanel.SetActive(true);
         }
+        Time.timeScale = 0f;
     }
 }

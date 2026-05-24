@@ -1,5 +1,7 @@
+using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +15,7 @@ public class TargetHealthNet : NetworkBehaviour
 
     private readonly SyncVar<float> m_CurrentHealth = new();
     private bool m_Dead;
+    private Coroutine m_HealUiCoroutine;
 
     private void Awake()
     {
@@ -69,6 +72,17 @@ public class TargetHealthNet : NetworkBehaviour
         m_CurrentHealth.Value = Mathf.Min(m_CurrentHealth.Value + amount, m_StartingHealth);
     }
 
+    [Server]
+    public void ShowHealBonusServer()
+    {
+        if (Owner == null)
+        {
+            return;
+        }
+
+        TargetShowHealBonus(Owner);
+    }
+
     private void OnHealthChanged(float prev, float next, bool asServer)
     {
         SetHealthUI(next);
@@ -107,5 +121,24 @@ public class TargetHealthNet : NetworkBehaviour
         m_ExplosionParticles.transform.parent = null;
         m_ExplosionParticles.Play();
         Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
+    }
+
+    [TargetRpc]
+    private void TargetShowHealBonus(NetworkConnection conn)
+    {
+        if (m_HealUiCoroutine != null)
+        {
+            StopCoroutine(m_HealUiCoroutine);
+        }
+
+        m_HealUiCoroutine = StartCoroutine(ShowHealIconBriefly());
+    }
+
+    private IEnumerator ShowHealIconBriefly()
+    {
+        BonusUIManager.Instance?.ShowHeal();
+        yield return new WaitForSeconds(1f);
+        BonusUIManager.Instance?.HideHeal();
+        m_HealUiCoroutine = null;
     }
 }

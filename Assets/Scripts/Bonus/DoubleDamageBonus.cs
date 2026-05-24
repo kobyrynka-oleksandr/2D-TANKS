@@ -1,4 +1,3 @@
-// DoubleDamageBonus.cs
 using UnityEngine;
 
 public class DoubleDamageBonus : BonusBase

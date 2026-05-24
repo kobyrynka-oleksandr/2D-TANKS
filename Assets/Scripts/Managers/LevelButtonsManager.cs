@@ -1,5 +1,6 @@
 using FishNet;
 using FishNet.Managing.Scened;
+using System.Collections;
 using UnityEngine;
 
 public class LevelButtonsManager : MonoBehaviour
@@ -14,6 +15,10 @@ public class LevelButtonsManager : MonoBehaviour
         Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene("Menu Scene");
     }
+    public void OnMenuButtonNet()
+    {
+        StartCoroutine(ReturnToMenuRoutine());
+    }
 
     public void OnLobbyButton()
     {
@@ -27,5 +32,31 @@ public class LevelButtonsManager : MonoBehaviour
         SceneLoadData sld = new SceneLoadData("CityMultiplayer");
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+    }
+
+    private IEnumerator ReturnToMenuRoutine()
+    {
+        Time.timeScale = 1f;
+
+        if (InstanceFinder.IsHostStarted == true)
+        {
+            InstanceFinder.ServerManager.StopConnection(true);
+            InstanceFinder.ClientManager.StopConnection();
+        }
+        else if (InstanceFinder.IsClientStarted == true)
+        {
+            InstanceFinder.ClientManager.StopConnection();
+        }
+        else if (InstanceFinder.IsServerStarted == true)
+        {
+            InstanceFinder.ServerManager.StopConnection(true);
+        }
+
+        while (InstanceFinder.IsClientStarted == true || InstanceFinder.IsServerStarted == true)
+        {
+            yield return null;
+        }
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu Scene");
     }
 }
