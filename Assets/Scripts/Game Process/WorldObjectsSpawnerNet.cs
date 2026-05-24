@@ -7,14 +7,24 @@ public class WorldObjectsSpawnerNet : NetworkBehaviour
     [Header("Prefabs")]
     [SerializeField] private NetworkObject m_FlagPrefab;
     [SerializeField] private NetworkObject m_BoxPrefab;
+    [SerializeField] private GameManagerNet m_GameManagerPrefab;
 
     [Header("Spawn Points")]
     [SerializeField] private Transform m_FlagSpawnPoint;
     [SerializeField] private Transform[] m_BoxSpawnPoints;
+    [SerializeField] private SpawnPointNet[] m_EnemySpawnPoints;
+
+    [Header("Scene References")]
+    [SerializeField] private BonusSpawner m_BonusSpawner;
+
+    [Header("Settings")]
+    [SerializeField] private int m_StartingPlayersAlive = 2;
 
     private TargetHealthNet m_FlagHealth;
+    private GameManagerNet m_GameManager;
 
     public TargetHealthNet FlagHealth => m_FlagHealth;
+    public GameManagerNet GameManager => m_GameManager;
 
     public override void OnStartServer()
     {
@@ -22,6 +32,7 @@ public class WorldObjectsSpawnerNet : NetworkBehaviour
 
         SpawnFlag();
         SpawnBoxes();
+        SpawnGameManager();
     }
 
     [Server]
@@ -71,5 +82,20 @@ public class WorldObjectsSpawnerNet : NetworkBehaviour
 
             InstanceFinder.ServerManager.Spawn(boxObject.gameObject);
         }
+    }
+
+    [Server]
+    private void SpawnGameManager()
+    {
+        if (m_GameManagerPrefab == null)
+        {
+            Debug.LogWarning("WorldObjectsSpawnerNet: GameManager prefab is missing.");
+            return;
+        }
+
+        m_GameManager = Instantiate(m_GameManagerPrefab);
+        m_GameManager.Initialize(m_EnemySpawnPoints, m_BonusSpawner, this, m_StartingPlayersAlive);
+
+        InstanceFinder.ServerManager.Spawn(m_GameManager.gameObject);
     }
 }

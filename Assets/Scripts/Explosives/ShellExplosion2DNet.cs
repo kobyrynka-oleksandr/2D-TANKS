@@ -60,14 +60,14 @@ public class ShellExplosion2DNet : NetworkBehaviour
                 continue;
             }
 
-            TargetHealth targetHealth = col.GetComponent<TargetHealth>();
-            if (!targetHealth)
+            TargetHealthNet targetHealthNet = col.GetComponent<TargetHealthNet>();
+            if (!targetHealthNet)
             {
                 continue;
             }
 
             Vector2 closestPoint = col.ClosestPoint(transform.position);
-            targetHealth.TakeDamage(CalculateDamage(closestPoint));
+            targetHealthNet.TakeDamage(CalculateDamage(closestPoint));
         }
 
         RpcPlayExplosion(transform.position);

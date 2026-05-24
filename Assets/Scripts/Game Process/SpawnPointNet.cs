@@ -37,8 +37,8 @@ public class SpawnPointNet : MonoBehaviour
             InstanceFinder.ServerManager.Spawn(enemy);
             m_OccupiedCount++;
 
-            TargetHealth health = enemy.GetComponent<TargetHealth>();
-            if (health)
+            TargetHealthNet health = enemy.GetComponent<TargetHealthNet>();
+            if (health != null)
             {
                 health.OnDeath += () => m_OccupiedCount--;
                 health.OnDeath += onDeath;
