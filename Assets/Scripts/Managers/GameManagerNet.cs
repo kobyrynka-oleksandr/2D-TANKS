@@ -23,6 +23,7 @@ public class GameManagerNet : NetworkBehaviour
 
     public int CurrentStage => m_CurrentStageSync.Value;
     public bool IsGameOver => m_IsGameOverSync.Value;
+    public WorldObjectsSpawnerNet WorldObjectsSpawner => m_WorldObjectsSpawner;
 
     public event Action<int> OnStageChangedEvent;
     public event Action<int> OnGameOverEvent;
