@@ -1,0 +1,213 @@
+fileFormatVersion: 2
+guid: 34784e21b69c6d04493278833a9795ad
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5686535057443082996
+    second: HighVelocityRounds-Icon_0
+  - first:
+      213: -2271481380388331191
+    second: HighVelocityRounds-Icon_1
+  - first:
+      213: -908047418765699117
+    second: HighVelocityRounds-Icon_2
+  - first:
+      213: -856863333507729751
+    second: HighVelocityRounds-Icon_3
+  - first:
+      213: 2623155010147701235
+    second: HighVelocityRounds-Icon_4
+  - first:
+      213: 3927977120997103519
+    second: HighVelocityRounds-Icon_5
+  - first:
+      213: -5666486786159228414
+    second: HighVelocityRounds-Icon_6
+  - first:
+      213: -4167272552190553660
+    second: HighVelocityRounds-Icon_7
+  - first:
+      213: 4859058812246180372
+    second: HighVelocityRounds-Icon_8
+  - first:
+      213: 417476515764746669
+    second: HighVelocityRounds-Icon_9
+  - first:
+      213: 5393127182731720480
+    second: HighVelocityRounds-Icon_10
+  - first:
+      213: 7429535074644776881
+    second: HighVelocityRounds-Icon_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: HighVelocityRounds-Icon_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0dac4a6e7e5511b0800000000000000
+      internalID: -5686535057443082996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 65fc2f0bd35f7d946be7f740aa96a99d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      HighVelocityRounds-Icon_0: -5686535057443082996
+      HighVelocityRounds-Icon_1: -2271481380388331191
+      HighVelocityRounds-Icon_10: 5393127182731720480
+      HighVelocityRounds-Icon_11: 7429535074644776881
+      HighVelocityRounds-Icon_2: -908047418765699117
+      HighVelocityRounds-Icon_3: -856863333507729751
+      HighVelocityRounds-Icon_4: 2623155010147701235
+      HighVelocityRounds-Icon_5: 3927977120997103519
+      HighVelocityRounds-Icon_6: -5666486786159228414
+      HighVelocityRounds-Icon_7: -4167272552190553660
+      HighVelocityRounds-Icon_8: 4859058812246180372
+      HighVelocityRounds-Icon_9: 417476515764746669
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

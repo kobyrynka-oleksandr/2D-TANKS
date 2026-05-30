@@ -1,6 +1,7 @@
 using FishNet.Connection;
 using FishNet.Managing.Server;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,20 +10,26 @@ public class TankShootingNet : NetworkBehaviour
 {
     [SerializeField] private Rigidbody2D m_ShellPrefab;
     [SerializeField] private Transform m_FireTransform;
-    [SerializeField] private float m_ShellSpeed = 10f;
-    [SerializeField] private float m_ShotCooldown = 0.5f;
+    [SerializeField] private float m_BaseShellSpeed = 10f;
+    [SerializeField] private float m_BaseShotCooldown = 0.5f;
     [SerializeField] private float m_MaxDamage = 100f;
     [SerializeField] private float m_ExplosionRadius = 1.5f;
     [SerializeField] private AudioSource m_ShootingAudio;
-
-    public float DamageMultiplier { get; private set; } = 1f;
-    public bool m_IsComputerControlled { get; set; }
 
     private TankInputUser m_InputUser;
     private InputAction m_FireAction;
     private float m_LocalCooldownTimer;
     private float m_ServerNextFireTime;
     private Coroutine m_DamageCoroutine;
+
+    private readonly SyncVar<float> _shellSpeedMultiplier = new(1f);
+    private readonly SyncVar<float> _shotCooldownMultiplier = new(1f);
+
+    public float CurrentShellSpeed => m_BaseShellSpeed * _shellSpeedMultiplier.Value;
+    public float CurrentShotCooldown => m_BaseShotCooldown * _shotCooldownMultiplier.Value;
+
+    public float DamageMultiplier { get; private set; } = 1f;
+    public bool m_IsComputerControlled { get; set; }
 
     private void Awake()
     {
@@ -47,6 +54,18 @@ public class TankShootingNet : NetworkBehaviour
         m_FireAction?.Enable();
     }
 
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+
+        if (IsOwner == false)
+        {
+            return;
+        }
+
+        m_FireAction?.Disable();
+    }
+
     private void Update()
     {
         if (IsOwner == false || m_IsComputerControlled == true)
@@ -61,7 +80,7 @@ public class TankShootingNet : NetworkBehaviour
 
         if (m_LocalCooldownTimer <= 0f && (m_FireAction?.WasPressedThisFrame() ?? false))
         {
-            m_LocalCooldownTimer = m_ShotCooldown;
+            m_LocalCooldownTimer = CurrentShotCooldown;
             FireServerRpc(m_FireTransform.position, m_FireTransform.rotation);
         }
     }
@@ -91,7 +110,7 @@ public class TankShootingNet : NetworkBehaviour
     [Server]
     private void FireInternal(Vector2 position, Quaternion rotation)
     {
-        m_ServerNextFireTime = Time.time + m_ShotCooldown;
+        m_ServerNextFireTime = Time.time + CurrentShotCooldown;
 
         Rigidbody2D shell = Instantiate(m_ShellPrefab, position, rotation);
 
@@ -104,7 +123,7 @@ public class TankShootingNet : NetworkBehaviour
             return;
         }
 
-        projectile.Initialize((Vector2)(rotation * Vector3.up), m_ShellSpeed);
+        projectile.Initialize((Vector2)(rotation * Vector3.up), CurrentShellSpeed);
         explosion.m_MaxDamage = m_MaxDamage * DamageMultiplier;
         explosion.m_ExplosionRadius = m_ExplosionRadius;
         explosion.m_Shooter = gameObject;
@@ -154,5 +173,17 @@ public class TankShootingNet : NetworkBehaviour
     private void TargetHideDoubleDamageBonus(FishNet.Connection.NetworkConnection conn)
     {
         BonusUIManager.Instance?.HideDoubleDmg();
+    }
+
+    [Server]
+    public void ApplyShellSpeedUpgradeServer(float multiplier)
+    {
+        _shellSpeedMultiplier.Value = multiplier;
+    }
+
+    [Server]
+    public void ApplyShotCooldownUpgradeServer(float multiplier)
+    {
+        _shotCooldownMultiplier.Value = multiplier;
     }
 }
