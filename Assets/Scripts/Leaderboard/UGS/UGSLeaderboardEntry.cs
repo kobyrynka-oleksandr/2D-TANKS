@@ -11,7 +11,6 @@ public class UGSLeaderboardEntry : MonoBehaviour
         if (string.IsNullOrEmpty(name)) return;
 
         await UGSLeaderboardService.SubmitScoreAsync(
-            name, GameManager.Instance.CurrentStage
-        );
+            name, GameManagerNet.Instance.CurrentStage);
     }
 }

@@ -2,19 +2,10 @@ using FishNet;
 using FishNet.Managing.Scened;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelButtonsManager : MonoBehaviour
 {
-    public void OnCityButton()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("City");
-    }
-
-    public void OnMenuButton()
-    {
-        Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu Scene");
-    }
     public void OnMenuButtonNet()
     {
         StartCoroutine(ReturnToMenuRoutine());
@@ -27,36 +18,72 @@ public class LevelButtonsManager : MonoBehaviour
 
     public void StartGameMultiplayer()
     {
-        if (!InstanceFinder.IsServerStarted) return;
+        if (InstanceFinder.IsServerStarted == false)
+        {
+            return;
+        }
 
-        SceneLoadData sld = new SceneLoadData("CityMultiplayer");
-        sld.ReplaceScenes = ReplaceOption.All;
-        InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+        SceneLoadData sceneLoadData = new SceneLoadData("CityMultiplayer");
+        sceneLoadData.ReplaceScenes = ReplaceOption.All;
+        InstanceFinder.SceneManager.LoadGlobalScenes(sceneLoadData);
+    }
+
+    public void StartGameSingleplayer()
+    {
+        StartCoroutine(StartGameSingleplayerRoutine());
+    }
+
+    private IEnumerator StartGameSingleplayerRoutine()
+    {
+        Time.timeScale = 1f;
+        if (InstanceFinder.IsServerStarted || InstanceFinder.IsClientStarted)
+        {
+            yield return StartCoroutine(StopNetworkRoutine());
+        }
+
+        InstanceFinder.TransportManager.Transport.SetMaximumClients(1);
+
+        InstanceFinder.ServerManager.StartConnection();
+        InstanceFinder.ClientManager.StartConnection("localhost");
+
+        while (InstanceFinder.IsServerStarted == false || InstanceFinder.IsClientStarted == false)
+        {
+            yield return null;
+        }
+
+        SceneLoadData sceneLoadData = new SceneLoadData("CitySingleplayer");
+        sceneLoadData.ReplaceScenes = ReplaceOption.All;
+        InstanceFinder.SceneManager.LoadGlobalScenes(sceneLoadData);
     }
 
     private IEnumerator ReturnToMenuRoutine()
     {
         Time.timeScale = 1f;
 
-        if (InstanceFinder.IsHostStarted == true)
+        yield return StartCoroutine(StopNetworkRoutine());
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu Scene");
+    }
+
+    private IEnumerator StopNetworkRoutine()
+    {
+        if (InstanceFinder.IsHostStarted)
         {
             InstanceFinder.ServerManager.StopConnection(true);
             InstanceFinder.ClientManager.StopConnection();
         }
-        else if (InstanceFinder.IsClientStarted == true)
+        else if (InstanceFinder.IsClientStarted)
         {
             InstanceFinder.ClientManager.StopConnection();
         }
-        else if (InstanceFinder.IsServerStarted == true)
+        else if (InstanceFinder.IsServerStarted)
         {
             InstanceFinder.ServerManager.StopConnection(true);
         }
 
-        while (InstanceFinder.IsClientStarted == true || InstanceFinder.IsServerStarted == true)
+        while (InstanceFinder.IsClientStarted || InstanceFinder.IsServerStarted)
         {
             yield return null;
         }
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu Scene");
     }
 }

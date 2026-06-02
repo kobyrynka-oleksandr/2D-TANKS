@@ -14,8 +14,6 @@ GameObject:
   - component: {fileID: 1006015121878719520}
   - component: {fileID: 1378532889057665750}
   - component: {fileID: 6232827818625501776}
-  - component: {fileID: 7357071585769337055}
-  - component: {fileID: 2853756903591509503}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -279,40 +277,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &7357071585769337055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1264050982316378768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dbbd79aec5778e459e20e69e5ef6585, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
-  m_ShellPrefab: {fileID: 8145889674659086980, guid: 959590eca5b5c204aada17355107a589, type: 3}
-  m_FireTransform: {fileID: 7349663231349963393}
-  m_ShellSpeed: 10
-  m_ShotCooldown: 1
-  m_MaxDamage: 100
-  m_ExplosionRadius: 0.5
-  m_ShootingAudio: {fileID: 6232827818625501776}
---- !u!114 &2853756903591509503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1264050982316378768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00a8e52ea0e59024aafec7c49709ce26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TargetHealth
-  m_StartingHealth: 120
-  m_Slider: {fileID: 592266128923094827}
-  m_ExplosionParticles: {fileID: 7163566558251009213}
 --- !u!1 &1971994935388329230
 GameObject:
   m_ObjectHideFlags: 0
@@ -5481,17 +5445,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16410ce9ad7080c4184a420cfae64c72, type: 3}
---- !u!114 &592266128923094827 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9151657091973892079, guid: 16410ce9ad7080c4184a420cfae64c72, type: 3}
-  m_PrefabInstance: {fileID: 8590916779008403652}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!224 &918775566579463338 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8933229376745233518, guid: 16410ce9ad7080c4184a420cfae64c72, type: 3}

@@ -34,7 +34,7 @@ public class ShellExplosion2DNet : NetworkBehaviour
         {
             return;
         }
-        if (other.gameObject == m_Shooter)
+        if (other.GetComponentInParent<NetworkObject>()?.gameObject == m_Shooter)
         {
             return;
         }
@@ -60,14 +60,26 @@ public class ShellExplosion2DNet : NetworkBehaviour
                 continue;
             }
 
-            TargetHealthNet targetHealthNet = col.GetComponent<TargetHealthNet>();
-            if (!targetHealthNet)
+            TargetHealthNet targetHealthNet = col.GetComponentInParent<TargetHealthNet>();
+            if (targetHealthNet == null)
+            {
+                continue;
+            }
+
+            if (!targetHealthNet.IsServerInitialized)
             {
                 continue;
             }
 
             Vector2 closestPoint = col.ClosestPoint(transform.position);
-            targetHealthNet.TakeDamage(CalculateDamage(closestPoint));
+            float damage = CalculateDamage(closestPoint);
+
+            if (damage <= 0f)
+            {
+                continue;
+            }
+
+            targetHealthNet.TakeDamage(damage);
         }
 
         RpcPlayExplosion(transform.position);

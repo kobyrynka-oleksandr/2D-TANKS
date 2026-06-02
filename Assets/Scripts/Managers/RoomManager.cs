@@ -17,7 +17,7 @@ public class RoomManager : MonoBehaviour
         CurrentHostAddress = GetLocalIPv4();
 
         InstanceFinder.ServerManager.StartConnection(m_Port);
-        InstanceFinder.ClientManager.StartConnection("localhost", m_Port);
+        InstanceFinder.ClientManager.StartConnection(m_ServerAddress, m_Port);
     }
 
     public void JoinRoom(string address)

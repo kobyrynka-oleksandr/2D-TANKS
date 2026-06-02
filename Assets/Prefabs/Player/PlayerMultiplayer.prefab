@@ -459,12 +459,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2721737195374121232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbf95b178527f764ba60fe89a1a7e287, type: 3}
+  m_Script: {fileID: 11500000, guid: fb5c83bd8c2df744aad32c896fbc5108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TankUpgrades
-  _componentIndexCache: 5
+  _componentIndexCache: 255
   _addedNetworkObject: {fileID: 8099292290965377604}
-  _networkObjectCache: {fileID: 8099292290965377604}
+  _networkObjectCache: {fileID: 0}
   _autoloaderReloadMultiplier: 0.7
   _reconOpticsVisionMultiplier: 1.5
   _velocityRoundsProjectileSpeedMultiplier: 1.5
@@ -509,7 +509,7 @@ MonoBehaviour:
   - {fileID: 5175093142078396831}
   - {fileID: 2055963728667195585}
   - {fileID: -7842518069850758701}
-  - {fileID: 5896013721294044806}
+  - {fileID: 0}
   - {fileID: 496623514816254135}
   - {fileID: 2288764474794220666}
   InitializedParentNetworkBehaviour: {fileID: 0}

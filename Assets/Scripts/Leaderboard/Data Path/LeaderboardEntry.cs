@@ -11,7 +11,7 @@ public class LeaderboardEntry : MonoBehaviour
         string name = m_NameInput.text.Trim();
         if (string.IsNullOrEmpty(name)) return;
 
-        PlayerData data = new PlayerData(name, GameManager.Instance.CurrentStage);
+        PlayerData data = new PlayerData(name, GameManagerNet.Instance.CurrentStage);
         SaveSystem.SavePlayer(data);
     }
 }

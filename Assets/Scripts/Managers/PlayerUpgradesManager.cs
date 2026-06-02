@@ -4,9 +4,9 @@ public class PlayerUpgradesManager : MonoBehaviour
 {
     [SerializeField] private GameObject _upgradesPanel;
 
-    private TankUpgrades _currentTankUpgrades;
+    private TankUpgradesNet _currentTankUpgrades;
 
-    public void SetTankUpgrades(TankUpgrades tankUpgrades)
+    public void SetTankUpgrades(TankUpgradesNet tankUpgrades)
     {
         _currentTankUpgrades = tankUpgrades;
     }

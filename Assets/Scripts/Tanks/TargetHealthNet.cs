@@ -48,7 +48,7 @@ public class TargetHealthNet : NetworkBehaviour
     [Server]
     public void TakeDamage(float amount)
     {
-        if (m_Dead)
+        if (!IsServerInitialized || m_Dead)
         {
             return;
         }

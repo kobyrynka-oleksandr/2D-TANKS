@@ -23808,7 +23808,6 @@ GameObject:
   - component: {fileID: 632519690}
   - component: {fileID: 632519689}
   - component: {fileID: 632519688}
-  - component: {fileID: 632519692}
   - component: {fileID: 632519693}
   - component: {fileID: 632519694}
   - component: {fileID: 632519695}
@@ -23907,18 +23906,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &632519692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 632519687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc7afc6ed4b2a8146a586dfc38e2d37c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameState
 --- !u!114 &632519693
 MonoBehaviour:
   m_ObjectHideFlags: 0
