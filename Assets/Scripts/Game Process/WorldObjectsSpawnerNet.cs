@@ -1,38 +1,38 @@
-using FishNet;
-using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
+using FishNet;
+using FishNet.Object;
 using UnityEngine;
 
 public class WorldObjectsSpawnerNet : MonoBehaviour
 {
     [Header("Prefabs")]
-    [SerializeField] private NetworkObject m_FlagPrefab;
-    [SerializeField] private NetworkObject m_BoxPrefab;
-    [SerializeField] private NetworkObject m_TurretPrefab;
-    [SerializeField] private GameManagerNet m_GameManagerPrefab;
+    [SerializeField] private NetworkObject _flagPrefab;
+    [SerializeField] private NetworkObject _boxPrefab;
+    [SerializeField] private NetworkObject _turretPrefab;
+    [SerializeField] private GameManagerNet _gameManagerPrefab;
 
     [Header("Spawn Points")]
-    [SerializeField] private Transform m_FlagSpawnPoint;
-    [SerializeField] private Transform[] m_BoxSpawnPoints;
-    [SerializeField] private Transform[] m_TurretSpawnPoints;
-    [SerializeField] private SpawnPointNet[] m_EnemySpawnPoints;
+    [SerializeField] private Transform _flagSpawnPoint;
+    [SerializeField] private Transform[] _boxSpawnPoints;
+    [SerializeField] private Transform[] _turretSpawnPoints;
+    [SerializeField] private SpawnPointNet[] _enemySpawnPoints;
 
     [Header("Scene References")]
-    [SerializeField] private BonusSpawnerNet m_BonusSpawner;
+    [SerializeField] private BonusSpawnerNet _bonusSpawner;
 
     [Header("Settings")]
-    [SerializeField] private int m_StartingPlayersAlive = 2;
+    [SerializeField] private int _startingPlayersAlive = 2;
 
-    private readonly List<AutoTurretNet> m_Turrets = new();
+    private readonly List<AutoTurretNet> _turrets = new();
 
-    private TargetHealthNet m_FlagHealth;
-    private GameManagerNet m_GameManager;
-    private bool m_IsSpawned;
+    private TargetHealthNet _flagHealth;
+    private GameManagerNet _gameManager;
+    private bool _isSpawned;
 
-    public TargetHealthNet FlagHealth => m_FlagHealth;
-    public GameManagerNet GameManager => m_GameManager;
-    public IReadOnlyList<AutoTurretNet> Turrets => m_Turrets;
+    public TargetHealthNet FlagHealth => _flagHealth;
+    public GameManagerNet GameManager => _gameManager;
+    public IReadOnlyList<AutoTurretNet> Turrets => _turrets;
 
     private void Start()
     {
@@ -46,12 +46,12 @@ public class WorldObjectsSpawnerNet : MonoBehaviour
             yield return null;
         }
 
-        if (m_IsSpawned)
+        if (_isSpawned)
         {
             yield break;
         }
 
-        m_IsSpawned = true;
+        _isSpawned = true;
         SpawnWorldObjects();
     }
 
@@ -65,41 +65,41 @@ public class WorldObjectsSpawnerNet : MonoBehaviour
 
     private void SpawnFlag()
     {
-        if (m_FlagPrefab == null || m_FlagSpawnPoint == null)
+        if (_flagPrefab == null || _flagSpawnPoint == null)
         {
             Debug.LogWarning("WorldObjectsSpawnerNet: Flag prefab or spawn point is missing.");
             return;
         }
 
         NetworkObject flagObject = Instantiate(
-            m_FlagPrefab,
-            m_FlagSpawnPoint.position,
-            m_FlagSpawnPoint.rotation);
+            _flagPrefab,
+            _flagSpawnPoint.position,
+            _flagSpawnPoint.rotation);
 
         InstanceFinder.ServerManager.Spawn(flagObject.gameObject);
-        m_FlagHealth = flagObject.GetComponent<TargetHealthNet>();
+        _flagHealth = flagObject.GetComponent<TargetHealthNet>();
     }
 
     private void SpawnBoxes()
     {
-        if (m_BoxPrefab == null || m_BoxSpawnPoints == null || m_BoxSpawnPoints.Length == 0)
+        if (_boxPrefab == null || _boxSpawnPoints == null || _boxSpawnPoints.Length == 0)
         {
             return;
         }
 
-        for (int i = 0; i < m_BoxSpawnPoints.Length; i++)
+        for (int i = 0; i < _boxSpawnPoints.Length; i++)
         {
-            Transform point = m_BoxSpawnPoints[i];
+            Transform spawnPoint = _boxSpawnPoints[i];
 
-            if (point == null)
+            if (spawnPoint == null)
             {
                 continue;
             }
 
             NetworkObject boxObject = Instantiate(
-                m_BoxPrefab,
-                point.position,
-                point.rotation);
+                _boxPrefab,
+                spawnPoint.position,
+                spawnPoint.rotation);
 
             InstanceFinder.ServerManager.Spawn(boxObject.gameObject);
         }
@@ -107,26 +107,26 @@ public class WorldObjectsSpawnerNet : MonoBehaviour
 
     private void SpawnTurrets()
     {
-        m_Turrets.Clear();
+        _turrets.Clear();
 
-        if (m_TurretPrefab == null || m_TurretSpawnPoints == null || m_TurretSpawnPoints.Length == 0)
+        if (_turretPrefab == null || _turretSpawnPoints == null || _turretSpawnPoints.Length == 0)
         {
             return;
         }
 
-        for (int i = 0; i < m_TurretSpawnPoints.Length; i++)
+        for (int i = 0; i < _turretSpawnPoints.Length; i++)
         {
-            Transform point = m_TurretSpawnPoints[i];
+            Transform spawnPoint = _turretSpawnPoints[i];
 
-            if (point == null)
+            if (spawnPoint == null)
             {
                 continue;
             }
 
             NetworkObject turretObject = Instantiate(
-                m_TurretPrefab,
-                point.position,
-                point.rotation);
+                _turretPrefab,
+                spawnPoint.position,
+                spawnPoint.rotation);
 
             InstanceFinder.ServerManager.Spawn(turretObject.gameObject);
 
@@ -134,22 +134,22 @@ public class WorldObjectsSpawnerNet : MonoBehaviour
 
             if (turret != null)
             {
-                m_Turrets.Add(turret);
+                _turrets.Add(turret);
             }
         }
     }
 
     private void SpawnGameManager()
     {
-        if (m_GameManagerPrefab == null)
+        if (_gameManagerPrefab == null)
         {
             Debug.LogWarning("WorldObjectsSpawnerNet: GameManager prefab is missing.");
             return;
         }
 
-        m_GameManager = Instantiate(m_GameManagerPrefab);
-        m_GameManager.Initialize(m_EnemySpawnPoints, m_BonusSpawner, this, m_StartingPlayersAlive);
+        _gameManager = Instantiate(_gameManagerPrefab);
+        _gameManager.Initialize(_enemySpawnPoints, _bonusSpawner, this, _startingPlayersAlive);
 
-        InstanceFinder.ServerManager.Spawn(m_GameManager.gameObject);
+        InstanceFinder.ServerManager.Spawn(_gameManager.gameObject);
     }
 }

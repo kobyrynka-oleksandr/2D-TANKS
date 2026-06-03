@@ -3,17 +3,18 @@ using UnityEngine;
 
 public abstract class BonusBaseNet : NetworkBehaviour
 {
-    [SerializeField] protected string m_PlayerTag = "Player";
-    private bool m_IsPicked;
+    [SerializeField] protected string _playerTag = "Player";
+
+    private bool _isPicked;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (m_IsPicked == true)
+        if (_isPicked)
         {
             return;
         }
 
-        if (other.CompareTag(m_PlayerTag) == false)
+        if (!other.CompareTag(_playerTag))
         {
             return;
         }
@@ -25,7 +26,7 @@ public abstract class BonusBaseNet : NetworkBehaviour
             return;
         }
 
-        m_IsPicked = true;
+        _isPicked = true;
         Apply(playerObject);
         Despawn();
     }

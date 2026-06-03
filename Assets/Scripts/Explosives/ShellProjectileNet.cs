@@ -3,24 +3,24 @@ using UnityEngine;
 
 public class ShellProjectileNet : NetworkBehaviour
 {
-    private Vector2 m_Direction;
-    private float m_Speed;
-    private bool m_Initialized;
+    private Vector2 _direction;
+    private float _speed;
+    private bool _isInitialized;
 
     public void Initialize(Vector2 direction, float speed)
     {
-        m_Direction = direction.normalized;
-        m_Speed = speed;
-        m_Initialized = true;
+        _direction = direction.normalized;
+        _speed = speed;
+        _isInitialized = true;
     }
 
     private void Update()
     {
-        if (!m_Initialized)
+        if (!_isInitialized)
         {
             return;
         }
 
-        transform.position += (Vector3)(m_Direction * m_Speed * Time.deltaTime);
+        transform.position += (Vector3)(_direction * _speed * Time.deltaTime);
     }
 }

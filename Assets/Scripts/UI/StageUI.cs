@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class StageUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI m_StageText;
+    [SerializeField] private TextMeshProUGUI _stageText;
 
-    private GameManagerNet m_Manager;
+    private GameManagerNet _manager;
 
     private IEnumerator Start()
     {
@@ -15,26 +15,28 @@ public class StageUI : MonoBehaviour
             yield return null;
         }
 
-        m_Manager = GameManagerNet.Instance;
-        m_Manager.OnStageChangedEvent += UpdateStage;
+        _manager = GameManagerNet.Instance;
+
+        _manager.StageChangedEvent += UpdateStage;
 
         yield return null;
-        UpdateStage(m_Manager.CurrentStage);
+
+        UpdateStage(_manager.CurrentStage);
     }
 
     private void OnDestroy()
     {
-        if (m_Manager != null)
+        if (_manager != null)
         {
-            m_Manager.OnStageChangedEvent -= UpdateStage;
+            _manager.StageChangedEvent -= UpdateStage;
         }
     }
 
     private void UpdateStage(int stage)
     {
-        if (m_StageText != null)
+        if (_stageText != null)
         {
-            m_StageText.text = $"Stage: {stage}";
+            _stageText.text = $"Stage: {stage}";
         }
     }
 }

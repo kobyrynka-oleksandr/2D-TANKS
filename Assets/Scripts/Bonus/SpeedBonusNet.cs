@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class SpeedBonusNet : BonusBaseNet
 {
-    [SerializeField] private float m_SpeedMultiplier = 1.5f;
-    [SerializeField] private float m_Duration = 7f;
+    [SerializeField] private float _speedMultiplier = 1.5f;
+    [SerializeField] private float _duration = 7f;
 
     [Server]
     protected override void Apply(NetworkObject playerObject)
@@ -13,7 +13,7 @@ public class SpeedBonusNet : BonusBaseNet
 
         if (movement != null)
         {
-            movement.ApplySpeedBonusServer(m_SpeedMultiplier, m_Duration);
+            movement.ApplySpeedBonusServer(_speedMultiplier, _duration);
         }
     }
 }

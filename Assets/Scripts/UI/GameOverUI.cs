@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class GameOverUI : MonoBehaviour
 {
-    [SerializeField] private GameObject m_GameOverPanel;
-    [SerializeField] private GameObject m_GUI;
-    [SerializeField] private TextMeshProUGUI m_FinalScore;
+    [SerializeField] private GameObject _gameOverPanel;
+    [SerializeField] private GameObject _gui;
+    [SerializeField] private TextMeshProUGUI _finalScore;
 
-    private GameManagerNet m_Manager;
+    private GameManagerNet _manager;
 
     private IEnumerator Start()
     {
-        if (m_GameOverPanel != null)
+        if (_gameOverPanel != null)
         {
-            m_GameOverPanel.SetActive(false);
+            _gameOverPanel.SetActive(false);
         }
 
         while (GameManagerNet.Instance == null)
@@ -22,20 +22,20 @@ public class GameOverUI : MonoBehaviour
             yield return null;
         }
 
-        m_Manager = GameManagerNet.Instance;
-        m_Manager.OnGameOverEvent += ShowGameOver;
+        _manager = GameManagerNet.Instance;
+        _manager.GameOverEvent += ShowGameOver;
 
-        if (m_Manager.IsGameOver == true)
+        if (_manager.IsGameOver)
         {
-            ShowGameOver(m_Manager.CurrentStage);
+            ShowGameOver(_manager.CurrentStage);
         }
     }
 
     private void OnDestroy()
     {
-        if (m_Manager != null)
+        if (_manager != null)
         {
-            m_Manager.OnGameOverEvent -= ShowGameOver;
+            _manager.GameOverEvent -= ShowGameOver;
         }
     }
 
@@ -43,20 +43,21 @@ public class GameOverUI : MonoBehaviour
     {
         Debug.Log($"GameOverUI: Show game over. Final stage = {finalStage}");
 
-        if (m_GUI != null)
+        if (_gui != null)
         {
-            m_GUI.SetActive(false);
+            _gui.SetActive(false);
         }
 
-        if (m_FinalScore != null)
+        if (_finalScore != null)
         {
-            m_FinalScore.text = finalStage.ToString();
+            _finalScore.text = finalStage.ToString();
         }
 
-        if (m_GameOverPanel != null)
+        if (_gameOverPanel != null)
         {
-            m_GameOverPanel.SetActive(true);
+            _gameOverPanel.SetActive(true);
         }
+
         Time.timeScale = 0f;
     }
 }

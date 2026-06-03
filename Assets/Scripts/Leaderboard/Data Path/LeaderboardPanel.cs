@@ -1,30 +1,35 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections.Generic;
 
 public class LeaderboardPanel : MonoBehaviour
 {
-    [SerializeField] private GameObject m_RowPrefab;
-    [SerializeField] private Transform m_Content;
+    [SerializeField] private GameObject _rowPrefab;
+    [SerializeField] private Transform _content;
 
     private void OnEnable()
     {
         Populate();
     }
 
-    public void Hide() => gameObject.SetActive(false);
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
 
     private void Populate()
     {
-        foreach (Transform child in m_Content)
+        foreach (Transform child in _content)
+        {
             Destroy(child.gameObject);
+        }
 
         List<PlayerData> leaderboard = SaveSystem.LoadLeaderboard();
 
         for (int i = 0; i < leaderboard.Count; i++)
         {
-            GameObject row = Instantiate(m_RowPrefab, m_Content);
+            GameObject row = Instantiate(_rowPrefab, _content);
             row.GetComponent<LeaderboardRow>().Set(i + 1, leaderboard[i]);
         }
     }

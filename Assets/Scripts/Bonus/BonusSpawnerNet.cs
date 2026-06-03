@@ -5,46 +5,46 @@ using UnityEngine;
 
 public class BonusSpawnerNet : MonoBehaviour
 {
-    [SerializeField] private Transform[] m_SpawnPoints;
-    [SerializeField] private NetworkObject[] m_BonusPrefabs;
-    [SerializeField] private bool m_IsAlwaysSpawnOnTwoPositions = true;
+    [SerializeField] private Transform[] _spawnPoints;
+    [SerializeField] private NetworkObject[] _bonusPrefabs;
+    [SerializeField] private bool _isAlwaysSpawnOnTwoPositions = true;
 
-    private readonly List<NetworkObject> m_ActiveBonuses = new();
+    private readonly List<NetworkObject> _activeBonuses = new();
 
     [Server]
     public void SpawnForStage()
     {
         ClearBonuses();
 
-        int count = m_IsAlwaysSpawnOnTwoPositions == true ? m_SpawnPoints.Length : Random.Range(1, 3);
-        List<int> indices = new List<int>();
+        int spawnCount = _isAlwaysSpawnOnTwoPositions ? _spawnPoints.Length : Random.Range(1, 3);
+        List<int> spawnIndices = new List<int>();
 
-        for (int i = 0; i < m_SpawnPoints.Length; i++)
+        for (int i = 0; i < _spawnPoints.Length; i++)
         {
-            indices.Add(i);
+            spawnIndices.Add(i);
         }
 
-        for (int i = indices.Count - 1; i > 0; i--)
+        for (int i = spawnIndices.Count - 1; i > 0; i--)
         {
-            int j = Random.Range(0, i + 1);
-            (indices[i], indices[j]) = (indices[j], indices[i]);
+            int randomIndex = Random.Range(0, i + 1);
+            (spawnIndices[i], spawnIndices[randomIndex]) = (spawnIndices[randomIndex], spawnIndices[i]);
         }
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < spawnCount; i++)
         {
-            NetworkObject prefab = m_BonusPrefabs[Random.Range(0, m_BonusPrefabs.Length)];
-            Vector3 pos = m_SpawnPoints[indices[i]].position;
+            NetworkObject bonusPrefab = _bonusPrefabs[Random.Range(0, _bonusPrefabs.Length)];
+            Vector3 spawnPosition = _spawnPoints[spawnIndices[i]].position;
 
-            NetworkObject bonus = Instantiate(prefab, pos, Quaternion.identity);
-            InstanceFinder.ServerManager.Spawn(bonus.gameObject);
-            m_ActiveBonuses.Add(bonus);
+            NetworkObject bonusInstance = Instantiate(bonusPrefab, spawnPosition, Quaternion.identity);
+            InstanceFinder.ServerManager.Spawn(bonusInstance.gameObject);
+            _activeBonuses.Add(bonusInstance);
         }
     }
 
     [Server]
     public void ClearBonuses()
     {
-        foreach (NetworkObject bonus in m_ActiveBonuses)
+        foreach (NetworkObject bonus in _activeBonuses)
         {
             if (bonus != null && bonus.IsSpawned)
             {
@@ -52,6 +52,6 @@ public class BonusSpawnerNet : MonoBehaviour
             }
         }
 
-        m_ActiveBonuses.Clear();
+        _activeBonuses.Clear();
     }
 }

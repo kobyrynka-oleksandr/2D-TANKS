@@ -1,15 +1,19 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class LeaderboardEntry : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField m_NameInput;
+    [SerializeField] private TMP_InputField _nameInput;
 
     public void Submit()
     {
-        string name = m_NameInput.text.Trim();
-        if (string.IsNullOrEmpty(name)) return;
+        string name = _nameInput.text.Trim();
+
+        if (string.IsNullOrEmpty(name))
+        {
+            return;
+        }
 
         PlayerData data = new PlayerData(name, GameManagerNet.Instance.CurrentStage);
         SaveSystem.SavePlayer(data);

@@ -4,55 +4,86 @@ using UnityEngine.InputSystem.Users;
 
 public class TankInputUser : MonoBehaviour
 {
-    public InputUser InputUser => m_InputUser;
-    public InputActionAsset ActionAsset => m_LocalActionAsset;
+    public InputUser InputUser => _inputUser;
+    public InputActionAsset ActionAsset => _localActionAsset;
 
-    private InputUser m_InputUser;
-    private InputActionAsset m_LocalActionAsset;
+    private InputUser _inputUser;
+    private InputActionAsset _localActionAsset;
 
     private void Awake()
     {
-        m_LocalActionAsset = InputActionAsset.FromJson(InputSystem.actions.ToJson());
+        InitializeInputAsset();
+        CreateInputUser();
 
-        var user = InputUser.PerformPairingWithDevice(Keyboard.current);
-
-        if (Gamepad.current != null)
-            user = InputUser.PerformPairingWithDevice(Gamepad.current, user: user);
-
-        SetNewInputUser(user);
-
-        InputSystem.onDeviceChange += OnDeviceChange;
+        InputSystem.onDeviceChange += DeviceChanged;
     }
 
     private void OnDestroy()
     {
-        InputSystem.onDeviceChange -= OnDeviceChange;
+        InputSystem.onDeviceChange -= DeviceChanged;
 
-        if (m_InputUser.valid)
-            m_InputUser.UnpairDevicesAndRemoveUser();
+        RemoveInputUser();
     }
 
-    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    public void ActivateScheme(string schemeName)
     {
-        if (change == InputDeviceChange.Added && device is Gamepad)
-        {
-            m_InputUser = InputUser.PerformPairingWithDevice(device, user: m_InputUser);
-        }
-    }
-
-    public void ActivateScheme(string name)
-    {
-        m_InputUser.ActivateControlScheme(name);
+        _inputUser.ActivateControlScheme(schemeName);
     }
 
     public void SetNewInputUser(InputUser user)
     {
-        if (!user.valid) return;
+        if (!user.valid)
+        {
+            return;
+        }
 
-        m_InputUser = user;
-        m_InputUser.AssociateActionsWithUser(m_LocalActionAsset);
+        _inputUser = user;
 
-        if (m_InputUser.controlScheme.HasValue)
-            m_InputUser.ActivateControlScheme(m_InputUser.controlScheme.Value);
+        _inputUser.AssociateActionsWithUser(_localActionAsset);
+
+        ActivateExistingControlScheme();
+    }
+
+    private void InitializeInputAsset()
+    {
+        _localActionAsset = InputActionAsset.FromJson(InputSystem.actions.ToJson());
+    }
+
+    private void CreateInputUser()
+    {
+        InputUser user = InputUser.PerformPairingWithDevice(Keyboard.current);
+
+        if (Gamepad.current != null)
+        {
+            user = InputUser.PerformPairingWithDevice(Gamepad.current, user: user);
+        }
+
+        SetNewInputUser(user);
+    }
+
+    private void DeviceChanged(
+        InputDevice device,
+        InputDeviceChange change)
+    {
+        if (change == InputDeviceChange.Added && device is Gamepad)
+        {
+            _inputUser = InputUser.PerformPairingWithDevice(device, user: _inputUser);
+        }
+    }
+
+    private void ActivateExistingControlScheme()
+    {
+        if (_inputUser.controlScheme.HasValue)
+        {
+            _inputUser.ActivateControlScheme(_inputUser.controlScheme.Value);
+        }
+    }
+
+    private void RemoveInputUser()
+    {
+        if (_inputUser.valid)
+        {
+            _inputUser.UnpairDevicesAndRemoveUser();
+        }
     }
 }

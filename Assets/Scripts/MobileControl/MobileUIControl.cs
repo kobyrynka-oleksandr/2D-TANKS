@@ -7,18 +7,18 @@ public class MobileUIControl : MonoBehaviour
 {
     public static MobileUIControl Instance { get; private set; }
 
-    public bool AutoDisableOnNonMobilePlatform = true;
+    [SerializeField] private bool _autoDisableOnNonMobilePlatform = true;
 
-    public InputDevice Device => m_Control.control.device;
+    public InputDevice Device => _control.control.device;
 
-    private OnScreenControl m_Control;
+    private OnScreenControl _control;
 
     void Awake()
     {
         Instance = this;
 
 #if UNITY_ANDROID
-        m_Control = GetComponentInChildren<OnScreenControl>();
+        _control = GetComponentInChildren<OnScreenControl>();
 #endif
 
 #if !UNITY_ANDROID
@@ -28,7 +28,7 @@ public class MobileUIControl : MonoBehaviour
 
     public void Show()
     {
-        if (AutoDisableOnNonMobilePlatform && !Application.isMobilePlatform)
+        if (_autoDisableOnNonMobilePlatform && !Application.isMobilePlatform)
         {
             return;
         }
@@ -38,7 +38,7 @@ public class MobileUIControl : MonoBehaviour
 
     public void Hide()
     {
-        if (AutoDisableOnNonMobilePlatform && !Application.isMobilePlatform)
+        if (_autoDisableOnNonMobilePlatform && !Application.isMobilePlatform)
         {
             return;
         }

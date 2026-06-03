@@ -111,17 +111,17 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2187494141019920177}
   _networkObjectCache: {fileID: 2187494141019920177}
-  m_TargetMask:
+  _targetMask:
     serializedVersion: 2
     m_Bits: 256
-  m_CollisionMask:
+  _collisionMask:
     serializedVersion: 2
     m_Bits: 64
-  m_ExplosionParticles: {fileID: 2202725313478516745}
-  m_ExplosionAudio: {fileID: 5393221128950663206}
-  m_MaxDamage: 100
-  m_ExplosionRadius: 5
-  m_Shooter: {fileID: 0}
+  _explosionParticles: {fileID: 2202725313478516745}
+  _explosionAudio: {fileID: 5393221128950663206}
+  MaxDamage: 100
+  ExplosionRadius: 5
+  Shooter: {fileID: 0}
 --- !u!114 &-1217517674253577504
 MonoBehaviour:
   m_ObjectHideFlags: 0

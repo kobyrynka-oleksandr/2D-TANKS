@@ -1,16 +1,16 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class LeaderboardRow : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI m_RankText;
-    [SerializeField] private TextMeshProUGUI m_NameText;
-    [SerializeField] private TextMeshProUGUI m_StageText;
+    [SerializeField] private TextMeshProUGUI _rankText;
+    [SerializeField] private TextMeshProUGUI _nameText;
+    [SerializeField] private TextMeshProUGUI _stageText;
 
     public void Set(int rank, PlayerData data)
     {
-        m_RankText.text = $"{rank}";
-        m_NameText.text = data.Name;
-        m_StageText.text = $"{data.Stage}";
+        _rankText.text = $"{rank}";
+        _nameText.text = data.Name;
+        _stageText.text = $"{data.Stage}";
     }
 }

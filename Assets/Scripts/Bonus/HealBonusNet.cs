@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class HealBonusNet : BonusBaseNet
 {
-    [SerializeField] private float m_HealAmount = 200f;
+    [SerializeField] private float _healAmount = 200f;
 
     [Server]
     protected override void Apply(NetworkObject playerObject)
@@ -12,7 +12,7 @@ public class HealBonusNet : BonusBaseNet
 
         if (health != null)
         {
-            health.Heal(m_HealAmount);
+            health.Heal(_healAmount);
             health.ShowHealBonusServer();
         }
     }

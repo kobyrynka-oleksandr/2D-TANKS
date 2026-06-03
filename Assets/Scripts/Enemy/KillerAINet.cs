@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class KillerAINet : EnemyAINet
 {
-    [SerializeField] private float m_StopDistance = 4f;
-    [SerializeField] private float m_ShootRange = 6f;
-    [SerializeField] private LayerMask m_ObstacleMask;
+    [SerializeField] private float _stopDistance = 4f;
+    [SerializeField] private float _shootRange = 6f;
+    [SerializeField] private LayerMask _obstacleMask;
 
     protected override void OnUpdateAI()
     {
@@ -20,9 +20,9 @@ public class KillerAINet : EnemyAINet
         Vector2 targetCenter = GetTargetCenter(target);
         float distance = Vector2.Distance(transform.position, targetCenter);
 
-        if (distance > m_StopDistance)
+        if (distance > _stopDistance)
         {
-            m_IsAiming = false;
+            _isAiming = false;
             MoveTo(target.position);
         }
         else
@@ -30,12 +30,12 @@ public class KillerAINet : EnemyAINet
             StopMoving();
         }
 
-        if (distance <= m_ShootRange)
+        if (distance <= _shootRange)
         {
-            m_IsAiming = true;
-            RotateToward(targetCenter, m_RotateSpeed);
+            _isAiming = true;
+            RotateToward(targetCenter, _rotateSpeed);
 
-            if (IsFacing(targetCenter, 15f) && HasClearShot(targetCenter, m_ObstacleMask))
+            if (IsFacing(targetCenter, 15f) && HasClearShot(targetCenter, _obstacleMask))
             {
                 TryShoot();
             }

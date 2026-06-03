@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 4914455930813558005}
   - component: {fileID: 5702138573062350505}
   - component: {fileID: 6138766377143949893}
+  - component: {fileID: -1510650231788004239}
   - component: {fileID: -3321445969596316984}
   - component: {fileID: -1361018979892305799}
   - component: {fileID: 5175093142078396831}
@@ -360,6 +361,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-1510650231788004239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2721737195374121232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 962c3afc490b8ab4a865de6963ca5700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TankInputUser
 --- !u!114 &-3321445969596316984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,8 +388,8 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8099292290965377604}
   _networkObjectCache: {fileID: 8099292290965377604}
-  m_Speed: 6.5
-  m_TurnSpeed: 100
+  _speed: 6.5
+  _turnSpeed: 100
 --- !u!114 &-1361018979892305799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,13 +405,13 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8099292290965377604}
   _networkObjectCache: {fileID: 8099292290965377604}
-  m_ShellPrefab: {fileID: 3955092541123211099, guid: ae23266d6fa969a45bde22da3a814a98, type: 3}
-  m_FireTransform: {fileID: 5587824941431324115}
-  m_BaseShellSpeed: 10
-  m_BaseShotCooldown: 1
-  m_MaxDamage: 100
-  m_ExplosionRadius: 0.5
-  m_ShootingAudio: {fileID: 6138766377143949893}
+  _shellPrefab: {fileID: 3955092541123211099, guid: ae23266d6fa969a45bde22da3a814a98, type: 3}
+  _fireTransform: {fileID: 5587824941431324115}
+  _baseShellSpeed: 10
+  _baseShotCooldown: 1
+  _maxDamage: 100
+  _explosionRadius: 0.5
+  _shootingAudio: {fileID: 6138766377143949893}
 --- !u!114 &5175093142078396831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,9 +427,9 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 8099292290965377604}
   _networkObjectCache: {fileID: 8099292290965377604}
-  m_StartingHealth: 500
-  m_Slider: {fileID: 5597402956077979990}
-  m_ExplosionParticles: {fileID: 6754038693418877308}
+  _startingHealth: 500
+  _slider: {fileID: 5597402956077979990}
+  _explosionParticles: {fileID: 6754038693418877308}
 --- !u!114 &2055963728667195585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,8 +445,8 @@ MonoBehaviour:
   _componentIndexCache: 3
   _addedNetworkObject: {fileID: 8099292290965377604}
   _networkObjectCache: {fileID: 8099292290965377604}
-  m_VirtualCamera: {fileID: 2033166747895248788}
-  m_CameraTarget: {fileID: 7647134223436948678}
+  _virtualCamera: {fileID: 2033166747895248788}
+  _cameraTarget: {fileID: 7647134223436948678}
 --- !u!114 &-7842518069850758701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -449,7 +462,7 @@ MonoBehaviour:
   _componentIndexCache: 4
   _addedNetworkObject: {fileID: 8099292290965377604}
   _networkObjectCache: {fileID: 8099292290965377604}
-  m_Health: {fileID: 5175093142078396831}
+  _health: {fileID: 5175093142078396831}
 --- !u!114 &5896013721294044806
 MonoBehaviour:
   m_ObjectHideFlags: 0

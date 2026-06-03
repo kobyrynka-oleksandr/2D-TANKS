@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DoubleDamageBonusNet : BonusBaseNet
 {
-    [SerializeField] private float m_Duration = 7f;
+    [SerializeField] private float _duration = 7f;
 
     [Server]
     protected override void Apply(NetworkObject playerObject)
@@ -12,7 +12,7 @@ public class DoubleDamageBonusNet : BonusBaseNet
 
         if (shooting != null)
         {
-            shooting.ApplyDoubleDamageBonusServer(m_Duration);
+            shooting.ApplyDoubleDamageBonusServer(_duration);
         }
     }
 }

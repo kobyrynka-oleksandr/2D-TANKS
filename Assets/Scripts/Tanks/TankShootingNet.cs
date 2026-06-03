@@ -8,87 +8,117 @@ using UnityEngine.InputSystem;
 
 public class TankShootingNet : NetworkBehaviour
 {
-    [SerializeField] private Rigidbody2D m_ShellPrefab;
-    [SerializeField] private Transform m_FireTransform;
-    [SerializeField] private float m_BaseShellSpeed = 10f;
-    [SerializeField] private float m_BaseShotCooldown = 0.5f;
-    [SerializeField] private float m_MaxDamage = 100f;
-    [SerializeField] private float m_ExplosionRadius = 1.5f;
-    [SerializeField] private AudioSource m_ShootingAudio;
+    [SerializeField] private Rigidbody2D _shellPrefab;
+    [SerializeField] private Transform _fireTransform;
+    [SerializeField] private float _baseShellSpeed = 10f;
+    [SerializeField] private float _baseShotCooldown = 0.5f;
+    [SerializeField] private float _maxDamage = 100f;
+    [SerializeField] private float _explosionRadius = 1.5f;
+    [SerializeField] private AudioSource _shootingAudio;
 
-    private TankInputUser m_InputUser;
-    private InputAction m_FireAction;
-    private float m_LocalCooldownTimer;
-    private float m_ServerNextFireTime;
-    private Coroutine m_DamageCoroutine;
+    private TankInputUser _inputUser;
+    private InputAction _fireAction;
+
+    private float _localCooldownTimer;
+    private float _serverNextFireTime;
+
+    private Coroutine _damageCoroutine;
 
     private readonly SyncVar<float> _shellSpeedMultiplier = new(1f);
     private readonly SyncVar<float> _shotCooldownMultiplier = new(1f);
 
-    public float CurrentShellSpeed => m_BaseShellSpeed * _shellSpeedMultiplier.Value;
-    public float CurrentShotCooldown => m_BaseShotCooldown * _shotCooldownMultiplier.Value;
+    public float CurrentShellSpeed =>
+        _baseShellSpeed * _shellSpeedMultiplier.Value;
+
+    public float CurrentShotCooldown =>
+        _baseShotCooldown * _shotCooldownMultiplier.Value;
 
     public float DamageMultiplier { get; private set; } = 1f;
-    public bool m_IsComputerControlled { get; set; }
+
+    public bool IsComputerControlled { get; set; }
 
     private void Awake()
     {
-        m_InputUser = GetComponent<TankInputUser>();
+        InitializeInputUser();
+    }
 
-        if (m_InputUser == null)
+    private void Update()
+    {
+        if (!CanProcessLocalInput())
         {
-            m_InputUser = gameObject.AddComponent<TankInputUser>();
+            return;
         }
+
+        UpdateCooldown();
+        TryShoot();
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
 
-        if (IsOwner == false)
+        if (!IsOwner)
         {
             return;
         }
 
-        m_FireAction = m_InputUser.ActionAsset.FindAction("Fire");
-        m_FireAction?.Enable();
+        InitializeFireInput();
     }
 
     public override void OnStopClient()
     {
         base.OnStopClient();
 
-        if (IsOwner == false)
+        if (!IsOwner)
         {
             return;
         }
 
-        m_FireAction?.Disable();
+        _fireAction?.Disable();
     }
 
-    private void Update()
+    [Server]
+    public void FireFromAI()
     {
-        if (IsOwner == false || m_IsComputerControlled == true)
+        if (Time.time < _serverNextFireTime)
         {
             return;
         }
 
-        if (m_LocalCooldownTimer > 0f)
+        FireInternal(_fireTransform.position, _fireTransform.rotation);
+    }
+
+    [Server]
+    public void ApplyDoubleDamageBonusServer(float duration)
+    {
+        if (_damageCoroutine != null)
         {
-            m_LocalCooldownTimer -= Time.deltaTime;
+            StopCoroutine(_damageCoroutine);
         }
 
-        if (m_LocalCooldownTimer <= 0f && (m_FireAction?.WasPressedThisFrame() ?? false))
-        {
-            m_LocalCooldownTimer = CurrentShotCooldown;
-            FireServerRpc(m_FireTransform.position, m_FireTransform.rotation);
-        }
+        _damageCoroutine = StartCoroutine(DoubleDamageRoutineServer(duration));
+    }
+
+    [Server]
+    public void ApplyShellSpeedUpgradeServer(
+        float multiplier)
+    {
+        _shellSpeedMultiplier.Value = multiplier;
+    }
+
+    [Server]
+    public void ApplyShotCooldownUpgradeServer(
+        float multiplier)
+    {
+        _shotCooldownMultiplier.Value = multiplier;
     }
 
     [ServerRpc]
-    private void FireServerRpc(Vector2 position, Quaternion rotation)
+    private void FireServerRpc(
+        Vector2 position,
+        Quaternion rotation)
     {
-        if (Time.time < m_ServerNextFireTime)
+        if (Time.time < _serverNextFireTime)
         {
             return;
         }
@@ -97,93 +127,128 @@ public class TankShootingNet : NetworkBehaviour
     }
 
     [Server]
-    public void FireFromAI()
+    private void FireInternal(
+        Vector2 position,
+        Quaternion rotation)
     {
-        if (Time.time < m_ServerNextFireTime)
-        {
-            return;
-        }
+        _serverNextFireTime = Time.time + CurrentShotCooldown;
 
-        FireInternal(m_FireTransform.position, m_FireTransform.rotation);
-    }
+        Rigidbody2D shell = Instantiate(_shellPrefab, position, rotation);
 
-    [Server]
-    private void FireInternal(Vector2 position, Quaternion rotation)
-    {
-        m_ServerNextFireTime = Time.time + CurrentShotCooldown;
-
-        Rigidbody2D shell = Instantiate(m_ShellPrefab, position, rotation);
-
-        ShellProjectileNet projectile = shell.GetComponent<ShellProjectileNet>();
-        ShellExplosion2DNet explosion = shell.GetComponent<ShellExplosion2DNet>();
-
-        if (projectile == null || explosion == null)
+        if (!TryInitializeShell(shell, rotation))
         {
             Destroy(shell.gameObject);
             return;
         }
 
-        projectile.Initialize((Vector2)(rotation * Vector3.up), CurrentShellSpeed);
-        explosion.m_MaxDamage = m_MaxDamage * DamageMultiplier;
-        explosion.m_ExplosionRadius = m_ExplosionRadius;
-        explosion.m_Shooter = gameObject;
-
         ServerManager.Spawn(shell.gameObject);
+
         PlayShootSoundObserversRpc();
     }
 
-    [ObserversRpc]
-    private void PlayShootSoundObserversRpc()
-    {
-        m_ShootingAudio?.Play();
-    }
-
     [Server]
-    public void ApplyDoubleDamageBonusServer(float duration)
-    {
-        if (m_DamageCoroutine != null)
-        {
-            StopCoroutine(m_DamageCoroutine);
-        }
-
-        m_DamageCoroutine = StartCoroutine(DoubleDamageRoutineServer(duration));
-    }
-
-    [Server]
-    private IEnumerator DoubleDamageRoutineServer(float duration)
+    private IEnumerator DoubleDamageRoutineServer(
+        float duration)
     {
         DamageMultiplier = 2f;
+
         TargetShowDoubleDamageBonus(Owner);
 
         yield return new WaitForSeconds(duration);
 
         DamageMultiplier = 1f;
+
         TargetHideDoubleDamageBonus(Owner);
 
-        m_DamageCoroutine = null;
+        _damageCoroutine = null;
+    }
+
+    [ObserversRpc]
+    private void PlayShootSoundObserversRpc()
+    {
+        _shootingAudio?.Play();
     }
 
     [TargetRpc]
-    private void TargetShowDoubleDamageBonus(FishNet.Connection.NetworkConnection conn)
+    private void TargetShowDoubleDamageBonus(
+        NetworkConnection connection)
     {
-        BonusUIManager.Instance?.ShowDoubleDmg();
+        BonusUIManager.Instance?.ShowDoubleDamage();
     }
 
     [TargetRpc]
-    private void TargetHideDoubleDamageBonus(FishNet.Connection.NetworkConnection conn)
+    private void TargetHideDoubleDamageBonus(
+        NetworkConnection connection)
     {
-        BonusUIManager.Instance?.HideDoubleDmg();
+        BonusUIManager.Instance?.HideDoubleDamage();
     }
 
-    [Server]
-    public void ApplyShellSpeedUpgradeServer(float multiplier)
+    private void InitializeInputUser()
     {
-        _shellSpeedMultiplier.Value = multiplier;
+        _inputUser = GetComponent<TankInputUser>();
+
+        if (_inputUser == null)
+        {
+            _inputUser = gameObject.AddComponent<TankInputUser>();
+        }
     }
 
-    [Server]
-    public void ApplyShotCooldownUpgradeServer(float multiplier)
+    private void InitializeFireInput()
     {
-        _shotCooldownMultiplier.Value = multiplier;
+        _fireAction = _inputUser.ActionAsset.FindAction("Fire");
+
+        _fireAction?.Enable();
+    }
+
+    private bool CanProcessLocalInput()
+    {
+        return IsOwner && !IsComputerControlled;
+    }
+
+    private void UpdateCooldown()
+    {
+        if (_localCooldownTimer > 0f)
+        {
+            _localCooldownTimer -= Time.deltaTime;
+        }
+    }
+
+    private void TryShoot()
+    {
+        bool canShoot = _localCooldownTimer <= 0f &&
+            (_fireAction?.WasPressedThisFrame() ?? false);
+
+        if (!canShoot)
+        {
+            return;
+        }
+
+        _localCooldownTimer = CurrentShotCooldown;
+
+        FireServerRpc(_fireTransform.position, _fireTransform.rotation);
+    }
+
+    private bool TryInitializeShell(
+        Rigidbody2D shell,
+        Quaternion rotation)
+    {
+        ShellProjectileNet projectile = shell.GetComponent<ShellProjectileNet>();
+
+        ShellExplosion2DNet explosion = shell.GetComponent<ShellExplosion2DNet>();
+
+        if (projectile == null || explosion == null)
+        {
+            return false;
+        }
+
+        projectile.Initialize((Vector2)(rotation * Vector3.up), CurrentShellSpeed);
+
+        explosion.MaxDamage = _maxDamage * DamageMultiplier;
+
+        explosion.ExplosionRadius = _explosionRadius;
+
+        explosion.Shooter = gameObject;
+
+        return true;
     }
 }

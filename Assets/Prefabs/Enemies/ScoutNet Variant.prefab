@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7742d5730344ab24a8606f81700ef1dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoutZoneNet
-  m_ZoneType: 0
+  _zoneType: 0
 --- !u!1 &7573626184644659631
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7742d5730344ab24a8606f81700ef1dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoutZoneNet
-  m_ZoneType: 1
+  _zoneType: 1
 --- !u!1001 &3986521787788249334
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -402,13 +402,13 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 897752296224923725}
   _networkObjectCache: {fileID: 0}
-  m_ShellPrefab: {fileID: 3955092541123211099, guid: 2650d3e1a4364bf4b8ba355104a8908a, type: 3}
-  m_FireTransform: {fileID: 5957637462303208055}
-  m_BaseShellSpeed: 10
-  m_BaseShotCooldown: 0.5
-  m_MaxDamage: 90
-  m_ExplosionRadius: 0.5
-  m_ShootingAudio: {fileID: 7002406450536497830}
+  _shellPrefab: {fileID: 3955092541123211099, guid: 2650d3e1a4364bf4b8ba355104a8908a, type: 3}
+  _fireTransform: {fileID: 5957637462303208055}
+  _baseShellSpeed: 10
+  _baseShotCooldown: 0.5
+  _maxDamage: 90
+  _explosionRadius: 0.5
+  _shootingAudio: {fileID: 7002406450536497830}
 --- !u!114 &186942036658077402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,9 +424,9 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 897752296224923725}
   _networkObjectCache: {fileID: 0}
-  m_StartingHealth: 130
-  m_Slider: {fileID: 4569709523996878813}
-  m_ExplosionParticles: {fileID: 6068848598128397387}
+  _startingHealth: 130
+  _slider: {fileID: 4569709523996878813}
+  _explosionParticles: {fileID: 6068848598128397387}
 --- !u!114 &1854338254497607907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,17 +442,17 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 897752296224923725}
   _networkObjectCache: {fileID: 0}
-  m_FireRate: 2.5
-  m_RotateSpeed: 80
-  m_MoveSpeed: 4
-  m_TargetSearchInterval: 0.5
-  m_ObstacleMask:
+  _fireRate: 2.5
+  _rotateSpeed: 80
+  _moveSpeed: 4
+  _targetSearchInterval: 0.5
+  _obstacleMask:
     serializedVersion: 2
     m_Bits: 64
-  m_PlayerStopDistance: 4
-  m_PlayerShootRange: 6
-  m_DefenseStopDistance: 6
-  m_DefenseShootRange: 8
+  _playerStopDistance: 4
+  _playerShootRange: 6
+  _defenseStopDistance: 6
+  _defenseShootRange: 8
 --- !u!114 &897752296224923725
 MonoBehaviour:
   m_ObjectHideFlags: 0

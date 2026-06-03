@@ -3,131 +3,196 @@ using FishNet.Connection;
 using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Transporting;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyManager : NetworkBehaviour
 {
-    [SerializeField] private TMP_Text m_PlayersText;
-    [SerializeField] private Button m_StartButton;
-    [SerializeField] private GameObject m_PlayerEntryPrefab;
-    [SerializeField] private Transform m_ContentParent;
+    [SerializeField] private TMP_Text _playersText;
+    [SerializeField] private Button _startButton;
+    [SerializeField] private GameObject _playerEntryPrefab;
+    [SerializeField] private Transform _contentParent;
 
     public override void OnStartServer()
     {
         base.OnStartServer();
-        ServerManager.OnRemoteConnectionState += OnRemoteClientConnectionState;
-        InstanceFinder.TransportManager.Transport.SetMaximumClients(2);
 
-        m_StartButton.gameObject.SetActive(true);
-        m_StartButton.interactable = false;
+        SubscribeServerEvents();
+        ConfigureServer();
 
-        ServerUpdateAndBroadcast();
+        UpdateStartButtonState(false);
+        UpdateAndBroadcastPlayerList();
     }
 
     public override void OnStopServer()
     {
         base.OnStopServer();
-        ServerManager.OnRemoteConnectionState -= OnRemoteClientConnectionState;
+
+        UnsubscribeServerEvents();
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        m_StartButton.gameObject.SetActive(IsServerStarted);
+
+        _startButton.gameObject.SetActive(IsServerStarted);
 
         if (!IsServerStarted)
         {
-            CmdRequestPlayerList();
-        }
-    }
-
-    private void OnRemoteClientConnectionState(NetworkConnection conn, RemoteConnectionStateArgs args)
-    {
-        if (args.ConnectionState == RemoteConnectionState.Stopped)
-        {
-            StartCoroutine(UpdateNextFrame());
-        }
-        else
-        {
-            ServerUpdateAndBroadcast();
-        }
-    }
-
-    private System.Collections.IEnumerator UpdateNextFrame()
-    {
-        yield return null;
-        ServerUpdateAndBroadcast();
-    }
-
-    [Server]
-    private void ServerUpdateAndBroadcast()
-    {
-        int count = ServerManager.Clients.Count;
-
-        string[] names = new string[count];
-        int i = 0;
-        foreach (var client in ServerManager.Clients)
-        {
-            names[i] = i == 0 ? $"Player {i + 1} (Host)" : $"Player {i + 1}";
-            i++;
-        }
-
-        RpcUpdatePlayerList(names);
-        RpcSetStartButton(count == 2);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void CmdRequestPlayerList()
-    {
-        ServerUpdateAndBroadcast();
-    }
-
-    [ObserversRpc(BufferLast = true)]
-    private void RpcUpdatePlayerList(string[] names)
-    {
-        foreach (Transform child in m_ContentParent)
-        {
-            Destroy(child.gameObject);
-        }
-
-        m_PlayersText.text = $"Players: {names.Length}/2";
-
-        for (int i = 0; i < names.Length; i++)
-        {
-            GameObject entry = Instantiate(m_PlayerEntryPrefab, m_ContentParent);
-            TMP_Text nameText = entry.GetComponentInChildren<TMP_Text>();
-            nameText.text = names[i];
-        }
-    }
-
-    [ObserversRpc(BufferLast = true)]
-    private void RpcSetStartButton(bool interactable)
-    {
-        if (IsServerStarted)
-        {
-            m_StartButton.interactable = interactable;
+            RequestPlayerList();
         }
     }
 
     [Server]
     public void OnStartGameButton()
     {
-        SceneLoadData sld = new SceneLoadData("CityMultiplayer");
-        sld.ReplaceScenes = ReplaceOption.All;
-        InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+        LoadGameScene();
     }
 
     public void OnLeaveRoomButton()
     {
+        LeaveRoom();
+    }
+
+    private void RemoteClientConnectionStateChanged(
+        NetworkConnection connection,
+        RemoteConnectionStateArgs arguments)
+    {
+        if (arguments.ConnectionState == RemoteConnectionState.Stopped)
+        {
+            StartCoroutine(UpdateNextFrame());
+            return;
+        }
+
+        UpdateAndBroadcastPlayerList();
+    }
+
+    private IEnumerator UpdateNextFrame()
+    {
+        yield return null;
+
+        UpdateAndBroadcastPlayerList();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestPlayerList()
+    {
+        UpdateAndBroadcastPlayerList();
+    }
+
+    [Server]
+    private void UpdateAndBroadcastPlayerList()
+    {
+        string[] playerNames = GeneratePlayerNames();
+
+        RpcUpdatePlayerList(playerNames);
+        RpcSetStartButton(playerNames.Length == 2);
+    }
+
+    [ObserversRpc(BufferLast = true)]
+    private void RpcUpdatePlayerList(string[] playerNames)
+    {
+        ClearPlayerEntries();
+
+        _playersText.text = $"Players: {playerNames.Length}/2";
+
+        for (int i = 0; i < playerNames.Length; i++)
+        {
+            CreatePlayerEntry(playerNames[i]);
+        }
+    }
+
+    [ObserversRpc(BufferLast = true)]
+    private void RpcSetStartButton(bool canStart)
+    {
+        if (IsServerStarted)
+        {
+            UpdateStartButtonState(canStart);
+        }
+    }
+
+    private void SubscribeServerEvents()
+    {
+        ServerManager.OnRemoteConnectionState += RemoteClientConnectionStateChanged;
+    }
+
+    private void UnsubscribeServerEvents()
+    {
+        ServerManager.OnRemoteConnectionState -= RemoteClientConnectionStateChanged;
+    }
+
+    private void ConfigureServer()
+    {
+        InstanceFinder.TransportManager.Transport.SetMaximumClients(2);
+
+        _startButton.gameObject.SetActive(true);
+    }
+
+    private void UpdateStartButtonState(bool isInteractable)
+    {
+        _startButton.interactable = isInteractable;
+    }
+
+    private string[] GeneratePlayerNames()
+    {
+        int playerCount = ServerManager.Clients.Count;
+
+        string[] names = new string[playerCount];
+
+        int index = 0;
+
+        foreach (var client in ServerManager.Clients)
+        {
+            names[index] =
+                index == 0
+                ? $"Player {index + 1} (Host)"
+                : $"Player {index + 1}";
+
+            index++;
+        }
+
+        return names;
+    }
+
+    private void ClearPlayerEntries()
+    {
+        foreach (Transform child in _contentParent)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    private void CreatePlayerEntry(string playerName)
+    {
+        GameObject entry =
+            Instantiate(_playerEntryPrefab, _contentParent);
+
+        TMP_Text playerText =
+            entry.GetComponentInChildren<TMP_Text>();
+
+        playerText.text = playerName;
+    }
+
+    private void LoadGameScene()
+    {
+        SceneLoadData sceneLoadData =
+            new SceneLoadData("CityMultiplayer");
+
+        sceneLoadData.ReplaceScenes = ReplaceOption.All;
+
+        InstanceFinder.SceneManager.LoadGlobalScenes(sceneLoadData);
+    }
+
+    private void LeaveRoom()
+    {
         if (IsServerStarted)
         {
             InstanceFinder.ServerManager.StopConnection(true);
+            return;
         }
-        else
-        {
-            InstanceFinder.ClientManager.StopConnection();
-        }
+
+        InstanceFinder.ClientManager.StopConnection();
     }
 }

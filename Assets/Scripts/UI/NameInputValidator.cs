@@ -1,39 +1,62 @@
+using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 [RequireComponent(typeof(TMP_InputField))]
 public class NameInputValidator : MonoBehaviour
 {
-    [SerializeField] private Button m_SaveButton;
+    [SerializeField] private Button _saveButton;
 
-    private TMP_InputField m_InputField;
+    private TMP_InputField _inputField;
 
     private void Awake()
     {
-        m_InputField = GetComponent<TMP_InputField>();
-        m_InputField.onValueChanged.AddListener(OnValueChanged);
+        _inputField = GetComponent<TMP_InputField>();
 
-        m_SaveButton.interactable = false;
+        _inputField.onValueChanged.AddListener(OnValueChanged);
+
+        _saveButton.interactable = false;
+    }
+
+    private void OnDestroy()
+    {
+        if (_inputField != null)
+        {
+            _inputField.onValueChanged.RemoveListener(OnValueChanged);
+        }
     }
 
     private void OnValueChanged(string value)
     {
         string filtered = Filter(value);
-        if (filtered != value)
-            m_InputField.SetTextWithoutNotify(filtered);
 
-        m_SaveButton.interactable = filtered.Length == m_InputField.characterLimit;
+        if (filtered != value)
+        {
+            _inputField.SetTextWithoutNotify(filtered);
+        }
+
+        _saveButton.interactable =
+            filtered.Length ==
+            _inputField.characterLimit;
     }
 
     private string Filter(string input)
     {
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        foreach (char c in input)
+        StringBuilder builder = new();
+
+        foreach (char character in input)
         {
-            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
-                sb.Append(char.ToUpper(c));
+            bool isLetter =
+                (character >= 'A' && character <= 'Z')
+                || (character >= 'a' && character <= 'z');
+
+            if (isLetter)
+            {
+                builder.Append(char.ToUpper(character));
+            }
         }
-        return sb.ToString();
+
+        return builder.ToString();
     }
 }

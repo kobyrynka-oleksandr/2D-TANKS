@@ -1,61 +1,62 @@
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TargetHealthNet : NetworkBehaviour
 {
-    [SerializeField] private float m_StartingHealth = 100f;
-    [SerializeField] private Slider m_Slider;
-    [SerializeField] private ParticleSystem m_ExplosionParticles;
+    [SerializeField] private float _startingHealth = 100f;
+    [SerializeField] private Slider _slider;
+    [SerializeField] private ParticleSystem _explosionParticles;
 
-    public event System.Action OnDeath;
+    public event Action DeathEvent;
 
-    private readonly SyncVar<float> m_CurrentHealth = new();
-    private bool m_Dead;
-    private Coroutine m_HealUiCoroutine;
+    private readonly SyncVar<float> _currentHealth = new();
+
+    private bool _isDead;
+
+    private Coroutine _healUiCoroutine;
 
     private void Awake()
     {
-        if (m_Slider != null)
-        {
-            m_Slider.maxValue = m_StartingHealth;
-        }
-
-        m_CurrentHealth.OnChange += OnHealthChanged;
+        InitializeUi();
+        SubscribeEvents();
     }
 
     private void OnDestroy()
     {
-        m_CurrentHealth.OnChange -= OnHealthChanged;
+        UnsubscribeEvents();
     }
 
     public override void OnStartServer()
     {
         base.OnStartServer();
-        m_CurrentHealth.Value = m_StartingHealth;
-        m_Dead = false;
+
+        _currentHealth.Value = _startingHealth;
+        _isDead = false;
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        SetHealthUI(m_CurrentHealth.Value);
+
+        UpdateHealthUi(_currentHealth.Value);
     }
 
     [Server]
     public void TakeDamage(float amount)
     {
-        if (!IsServerInitialized || m_Dead)
+        if (!IsServerInitialized || _isDead)
         {
             return;
         }
 
-        m_CurrentHealth.Value -= amount;
+        _currentHealth.Value -= amount;
 
-        if (m_CurrentHealth.Value <= 0f)
+        if (_currentHealth.Value <= 0f)
         {
             Die();
         }
@@ -64,12 +65,12 @@ public class TargetHealthNet : NetworkBehaviour
     [Server]
     public void Heal(float amount)
     {
-        if (m_Dead)
+        if (_isDead)
         {
             return;
         }
 
-        m_CurrentHealth.Value = Mathf.Min(m_CurrentHealth.Value + amount, m_StartingHealth);
+        _currentHealth.Value = Mathf.Min(_currentHealth.Value + amount, _startingHealth);
     }
 
     [Server]
@@ -83,62 +84,92 @@ public class TargetHealthNet : NetworkBehaviour
         TargetShowHealBonus(Owner);
     }
 
-    private void OnHealthChanged(float prev, float next, bool asServer)
-    {
-        SetHealthUI(next);
-    }
-
-    private void SetHealthUI(float health)
-    {
-        if (m_Slider != null)
-        {
-            m_Slider.value = health;
-        }
-    }
-
     [Server]
     private void Die()
     {
-        if (m_Dead)
+        if (_isDead)
         {
             return;
         }
 
-        m_Dead = true;
-        OnDeath?.Invoke();
+        _isDead = true;
+
+        DeathEvent?.Invoke();
+
         RpcPlayDeathEffects();
+
         Despawn();
     }
 
     [ObserversRpc]
     private void RpcPlayDeathEffects()
     {
-        if (m_ExplosionParticles == null)
+        if (_explosionParticles == null)
         {
             return;
         }
 
-        m_ExplosionParticles.transform.parent = null;
-        m_ExplosionParticles.Play();
-        Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
+        _explosionParticles.transform.parent = null;
+
+        _explosionParticles.Play();
+
+        Destroy(_explosionParticles.gameObject, _explosionParticles.main.duration);
     }
 
     [TargetRpc]
-    private void TargetShowHealBonus(NetworkConnection conn)
+    private void TargetShowHealBonus(
+        NetworkConnection connection)
     {
-        if (m_HealUiCoroutine != null)
+        if (_healUiCoroutine != null)
         {
-            StopCoroutine(m_HealUiCoroutine);
+            StopCoroutine(_healUiCoroutine);
         }
 
-        m_HealUiCoroutine = StartCoroutine(ShowHealIconBriefly());
+        _healUiCoroutine = StartCoroutine(ShowHealIconBriefly());
     }
 
     private IEnumerator ShowHealIconBriefly()
     {
         BonusUIManager.Instance?.ShowHeal();
+
         yield return new WaitForSeconds(1f);
+
         BonusUIManager.Instance?.HideHeal();
-        m_HealUiCoroutine = null;
+
+        _healUiCoroutine = null;
+    }
+
+    private void OnHealthChanged(
+        float previous,
+        float next,
+        bool asServer)
+    {
+        UpdateHealthUi(next);
+    }
+
+    private void InitializeUi()
+    {
+        if (_slider != null)
+        {
+            _slider.maxValue = _startingHealth;
+        }
+    }
+
+    private void SubscribeEvents()
+    {
+        _currentHealth.OnChange += OnHealthChanged;
+    }
+
+    private void UnsubscribeEvents()
+    {
+        _currentHealth.OnChange -= OnHealthChanged;
+    }
+
+    private void UpdateHealthUi(float health)
+    {
+        if (_slider != null)
+        {
+            _slider.value = health;
+        }
     }
 }

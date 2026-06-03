@@ -128,6 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1315819773}
+  - component: {fileID: 1315819764}
   - component: {fileID: 1315819772}
   - component: {fileID: 1315819771}
   - component: {fileID: 1315819770}
@@ -136,7 +137,6 @@ GameObject:
   - component: {fileID: 1315819767}
   - component: {fileID: 1315819766}
   - component: {fileID: 1315819765}
-  - component: {fileID: 1315819764}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f865841b1113624096e26d60f63f43a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BootstrapLoader
-  m_FirstScene: Menu Scene
+  _firstScene: Menu Scene
 --- !u!114 &1315819765
 MonoBehaviour:
   m_ObjectHideFlags: 0

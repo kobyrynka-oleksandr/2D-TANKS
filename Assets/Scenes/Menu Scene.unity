@@ -1461,7 +1461,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1112005764}
   m_HandleRect: {fileID: 1112005763}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2398,9 +2398,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b4a8c795d46a349b8845917a15b3e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraPingPong
-  m_PointA: {fileID: 1028040332}
-  m_PointB: {fileID: 367943818}
-  m_Speed: 2
+  _pointA: {fileID: 1028040332}
+  _pointB: {fileID: 367943818}
+  _speed: 2
 --- !u!1 &563130169
 GameObject:
   m_ObjectHideFlags: 0
@@ -23226,10 +23226,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f68f87d83d50445ae047b6d91e464b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsUI
-  m_MusicSlider: {fileID: 1377098670}
-  m_SfxSlider: {fileID: 1750758703}
-  m_MusicToggle: {fileID: 2089819857}
-  m_SfxToggle: {fileID: 1312865287}
+  _musicSlider: {fileID: 1377098670}
+  _sfxSlider: {fileID: 1750758703}
+  _musicToggle: {fileID: 2089819857}
+  _sfxToggle: {fileID: 1312865287}
 --- !u!1 &651460092
 GameObject:
   m_ObjectHideFlags: 0
@@ -58043,8 +58043,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c18ec5c50f7aa4f9c52b1255916406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardPanel
-  m_RowPrefab: {fileID: 3763310910370375658, guid: 9ca27460749736b448e2ce0fc1e5ba9e, type: 3}
-  m_Content: {fileID: 840587644}
+  _rowPrefab: {fileID: 3763310910370375658, guid: 9ca27460749736b448e2ce0fc1e5ba9e, type: 3}
+  _content: {fileID: 840587644}
 --- !u!114 &997319266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58057,8 +58057,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd4aa80036f17543a4a23925c30a6fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UGSLeaderboardPanel
-  m_RowPrefab: {fileID: 3763310910370375658, guid: 9ca27460749736b448e2ce0fc1e5ba9e, type: 3}
-  m_Content: {fileID: 840587644}
+  _rowPrefab: {fileID: 3763310910370375658, guid: 9ca27460749736b448e2ce0fc1e5ba9e, type: 3}
+  _content: {fileID: 840587644}
 --- !u!1 &1028040331
 GameObject:
   m_ObjectHideFlags: 0

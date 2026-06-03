@@ -2335,9 +2335,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b4a8c795d46a349b8845917a15b3e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraPingPong
-  m_PointA: {fileID: 1028040332}
-  m_PointB: {fileID: 367943818}
-  m_Speed: 2
+  _pointA: {fileID: 1028040332}
+  _pointB: {fileID: 367943818}
+  _speed: 2
 --- !u!1 &569062003
 GameObject:
   m_ObjectHideFlags: 0
@@ -23004,12 +23004,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91e8009c5858e6342920b04d5a45c458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyMenuUI
-  m_AddressInput: {fileID: 83603353}
-  m_MenuPanel: {fileID: 997319260}
-  m_LobbyPanel: {fileID: 171787481}
-  m_StatusText: {fileID: 1078451455}
-  m_RoomIdText: {fileID: 70241759}
-  m_RoomManager: {fileID: 2077208414}
+  _addressInput: {fileID: 83603353}
+  _menuPanel: {fileID: 997319260}
+  _lobbyPanel: {fileID: 171787481}
+  _statusText: {fileID: 1078451455}
+  _roomIdText: {fileID: 70241759}
+  _roomManager: {fileID: 2077208414}
 --- !u!1 &651460092
 GameObject:
   m_ObjectHideFlags: 0
@@ -23095,7 +23095,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 632519692}
         m_TargetAssemblyTypeName: LevelButtonsManager, Assembly-CSharp
-        m_MethodName: OnMenuButton
+        m_MethodName: OnMenuButtonNet
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -58811,8 +58811,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e1909f725501642b6e6523f2ae0cf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomManager
-  m_ServerAddress: localhost
-  m_Port: 7770
+  _serverAddress: localhost
+  _port: 7770
 --- !u!114 &2077208415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58885,10 +58885,10 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 2077208415}
   _networkObjectCache: {fileID: 0}
-  m_PlayersText: {fileID: 1676547525}
-  m_StartButton: {fileID: 471717073}
-  m_PlayerEntryPrefab: {fileID: 3763310910370375658, guid: c6b56ba877a4824409d907d702fe06ff, type: 3}
-  m_ContentParent: {fileID: 1660229555}
+  _playersText: {fileID: 1676547525}
+  _startButton: {fileID: 471717073}
+  _playerEntryPrefab: {fileID: 3763310910370375658, guid: c6b56ba877a4824409d907d702fe06ff, type: 3}
+  _contentParent: {fileID: 1660229555}
 --- !u!224 &2077208417
 RectTransform:
   m_ObjectHideFlags: 0

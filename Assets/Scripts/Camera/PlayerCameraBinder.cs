@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class PlayerCameraBinder : NetworkBehaviour
 {
-    [SerializeField] private CinemachineCamera m_VirtualCamera;
-    [SerializeField] private Transform m_CameraTarget;
+    [SerializeField] private CinemachineCamera _virtualCamera;
+    [SerializeField] private Transform _cameraTarget;
 
-    private bool m_IsBound;
+    private bool _isBound;
 
     public override void OnStartClient()
     {
@@ -25,7 +25,7 @@ public class PlayerCameraBinder : NetworkBehaviour
 
     private IEnumerator BindRoutine()
     {
-        for (int i = 0; i < 10 && !m_IsBound; i++)
+        for (int i = 0; i < 10 && !_isBound; i++)
         {
             yield return null;
             TryBindCamera();
@@ -34,11 +34,13 @@ public class PlayerCameraBinder : NetworkBehaviour
 
     private void TryBindCamera()
     {
-        if (m_IsBound || !IsOwner || m_VirtualCamera == null || m_CameraTarget == null)
+        if (_isBound || !IsOwner || _virtualCamera == null || _cameraTarget == null)
+        {
             return;
+        }
 
-        m_VirtualCamera.Follow = m_CameraTarget;
-        m_VirtualCamera.gameObject.SetActive(true);
-        m_IsBound = true;
+        _virtualCamera.Follow = _cameraTarget;
+        _virtualCamera.gameObject.SetActive(true);
+        _isBound = true;
     }
 }

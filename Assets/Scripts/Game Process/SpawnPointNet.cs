@@ -1,22 +1,23 @@
-using FishNet;
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FishNet;
+using UnityEngine;
 
 public class SpawnPointNet : MonoBehaviour
 {
-    [SerializeField] private float m_DelayBetweenSpawns = 1.5f;
+    [SerializeField] private float _delayBetweenSpawns = 1.5f;
 
-    private int m_OccupiedCount;
-    private bool m_IsProcessing;
+    private int _occupiedCount;
+    private bool _isProcessing;
 
-    private readonly Queue<(GameObject prefab, Action onDeath)> m_Queue = new();
+    private readonly Queue<(GameObject prefab, Action onDeath)> _queue = new();
 
     public void Enqueue(GameObject prefab, Action onDeath)
     {
-        m_Queue.Enqueue((prefab, onDeath));
-        if (!m_IsProcessing)
+        _queue.Enqueue((prefab, onDeath));
+
+        if (!_isProcessing)
         {
             StartCoroutine(Process());
         }
@@ -24,27 +25,30 @@ public class SpawnPointNet : MonoBehaviour
 
     private IEnumerator Process()
     {
-        m_IsProcessing = true;
+        _isProcessing = true;
 
-        while (m_Queue.Count > 0)
+        while (_queue.Count > 0)
         {
-            if (m_OccupiedCount > 0)
-                yield return new WaitForSeconds(m_DelayBetweenSpawns);
+            if (_occupiedCount > 0)
+            {
+                yield return new WaitForSeconds(_delayBetweenSpawns);
+            }
 
-            var (prefab, onDeath) = m_Queue.Dequeue();
+            (GameObject prefab, Action onDeath) = _queue.Dequeue();
 
             GameObject enemy = Instantiate(prefab, transform.position, transform.rotation);
             InstanceFinder.ServerManager.Spawn(enemy);
-            m_OccupiedCount++;
+            _occupiedCount++;
 
             TargetHealthNet health = enemy.GetComponent<TargetHealthNet>();
+
             if (health != null)
             {
-                health.OnDeath += () => m_OccupiedCount--;
-                health.OnDeath += onDeath;
+                health.DeathEvent += () => _occupiedCount--;
+                health.DeathEvent += onDeath;
             }
         }
 
-        m_IsProcessing = false;
+        _isProcessing = false;
     }
 }

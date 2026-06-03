@@ -3,34 +3,27 @@ using UnityEngine;
 
 public class PlayerDeathReporterNet : NetworkBehaviour
 {
-    [SerializeField] private TargetHealthNet m_Health;
+    [SerializeField] private TargetHealthNet _health;
 
     public override void OnStartServer()
     {
         base.OnStartServer();
 
-        if (m_Health == null)
-        {
-            m_Health = GetComponent<TargetHealthNet>();
-        }
+        InitializeHealth();
 
-        if (m_Health == null)
+        if (_health == null)
         {
-            Debug.LogError("PlayerDeathReporterNet: TargetHealthNet not found.");
             return;
         }
 
-        m_Health.OnDeath += HandleDeath;
+        SubscribeEvents();
     }
 
     public override void OnStopServer()
     {
         base.OnStopServer();
 
-        if (m_Health != null)
-        {
-            m_Health.OnDeath -= HandleDeath;
-        }
+        UnsubscribeEvents();
     }
 
     [Server]
@@ -38,10 +31,41 @@ public class PlayerDeathReporterNet : NetworkBehaviour
     {
         if (GameManagerNet.Instance == null)
         {
-            Debug.LogWarning("PlayerDeathReporterNet: GameManagerNet.Instance is null.");
+            Debug.LogWarning(
+                "PlayerDeathReporterNet: GameManagerNet.Instance is null.");
+
             return;
         }
 
         GameManagerNet.Instance.OnPlayerDied();
+    }
+
+    private void InitializeHealth()
+    {
+        if (_health != null)
+        {
+            return;
+        }
+
+        _health = GetComponent<TargetHealthNet>();
+
+        if (_health == null)
+        {
+            Debug.LogError(
+                "PlayerDeathReporterNet: TargetHealthNet not found.");
+        }
+    }
+
+    private void SubscribeEvents()
+    {
+        _health.DeathEvent += HandleDeath;
+    }
+
+    private void UnsubscribeEvents()
+    {
+        if (_health != null)
+        {
+            _health.DeathEvent -= HandleDeath;
+        }
     }
 }

@@ -157,9 +157,9 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 6909110137313052336}
   _networkObjectCache: {fileID: 0}
-  m_StartingHealth: 1
-  m_Slider: {fileID: 8306965533037551795}
-  m_ExplosionParticles: {fileID: 8949644621647903790}
+  _startingHealth: 1
+  _slider: {fileID: 8306965533037551795}
+  _explosionParticles: {fileID: 8949644621647903790}
 --- !u!114 &6909110137313052336
 MonoBehaviour:
   m_ObjectHideFlags: 0

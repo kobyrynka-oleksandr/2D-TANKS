@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class DestroyerAINet : EnemyAINet
 {
-    [SerializeField] private float m_ShootAtTargetRange = 8f;
-    [SerializeField] private float m_StopDistance = 6f;
-    [SerializeField] private LayerMask m_ObstacleMask;
+    [SerializeField] private float _shootAtTargetRange = 8f;
+    [SerializeField] private float _stopDistance = 6f;
+    [SerializeField] private LayerMask _obstacleMask;
 
     protected override void OnUpdateAI()
     {
@@ -18,9 +18,9 @@ public class DestroyerAINet : EnemyAINet
         Vector2 targetCenter = GetTargetCenter(target);
         float distance = Vector2.Distance(transform.position, targetCenter);
 
-        if (distance > m_StopDistance)
+        if (distance > _stopDistance)
         {
-            m_IsAiming = false;
+            _isAiming = false;
             MoveTo(target.position);
         }
         else
@@ -28,12 +28,12 @@ public class DestroyerAINet : EnemyAINet
             StopMoving();
         }
 
-        if (distance <= m_ShootAtTargetRange)
+        if (distance <= _shootAtTargetRange)
         {
-            m_IsAiming = true;
-            RotateToward(targetCenter, m_RotateSpeed);
+            _isAiming = true;
+            RotateToward(targetCenter, _rotateSpeed);
 
-            if (IsFacing(targetCenter, 15f) && HasClearShot(targetCenter, m_ObstacleMask))
+            if (IsFacing(targetCenter, 15f) && HasClearShot(targetCenter, _obstacleMask))
             {
                 TryShoot();
             }

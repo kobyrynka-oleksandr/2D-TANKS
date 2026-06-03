@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class LobbyMenuUI : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField m_AddressInput;
-    [SerializeField] private GameObject m_MenuPanel;
-    [SerializeField] private GameObject m_LobbyPanel;
-    [SerializeField] private TMP_Text m_StatusText;
-    [SerializeField] private TMP_Text m_RoomIdText;
-    [SerializeField] private RoomManager m_RoomManager;
+    [SerializeField] private TMP_InputField _addressInput;
+    [SerializeField] private GameObject _menuPanel;
+    [SerializeField] private GameObject _lobbyPanel;
+    [SerializeField] private TMP_Text _statusText;
+    [SerializeField] private TMP_Text _roomIdText;
+    [SerializeField] private RoomManager _roomManager;
 
     private void OnEnable()
     {
         if (InstanceFinder.ClientManager != null)
         {
-            InstanceFinder.ClientManager.OnClientConnectionState += OnConnectionState;
+            InstanceFinder.ClientManager.OnClientConnectionState += ConnectionStateChanged;
         }
     }
 
@@ -24,54 +24,65 @@ public class LobbyMenuUI : MonoBehaviour
     {
         if (InstanceFinder.ClientManager != null)
         {
-            InstanceFinder.ClientManager.OnClientConnectionState -= OnConnectionState;
+            InstanceFinder.ClientManager.OnClientConnectionState -= ConnectionStateChanged;
         }
     }
 
     public void OnCreateClicked()
     {
-        m_StatusText.text = "Starting server...";
-        m_RoomIdText.text = string.Empty;
-        m_RoomManager.CreateRoom();
+        _statusText.text = "Starting server...";
+        _roomIdText.text = string.Empty;
+
+        _roomManager.CreateRoom();
     }
 
     public void OnJoinClicked()
     {
-        string address = m_AddressInput.text;
+        string address = _addressInput.text;
 
         if (string.IsNullOrEmpty(address))
         {
             address = "localhost";
         }
 
-        m_StatusText.text = "Connecting...";
-        m_RoomIdText.text = string.Empty;
-        m_RoomManager.JoinRoom(address);
+        _statusText.text = "Connecting...";
+        _roomIdText.text = string.Empty;
+
+        _roomManager.JoinRoom(address);
     }
 
-    private void OnConnectionState(ClientConnectionStateArgs args)
+    private void ConnectionStateChanged(ClientConnectionStateArgs args)
     {
         if (args.ConnectionState == LocalConnectionState.Started)
         {
-            m_StatusText.text = "Connected!";
-            m_MenuPanel.SetActive(false);
-            m_LobbyPanel.SetActive(true);
-
-            if (InstanceFinder.IsServerStarted)
-            {
-                m_RoomIdText.text = m_RoomManager.CurrentHostAddress;
-            }
-            else
-            {
-                m_RoomIdText.text = string.Empty;
-            }
+            HandleConnected();
         }
         else if (args.ConnectionState == LocalConnectionState.Stopped)
         {
-            m_StatusText.text = "Disconnected";
-            m_MenuPanel.SetActive(true);
-            m_LobbyPanel.SetActive(false);
-            m_RoomIdText.text = string.Empty;
+            HandleDisconnected();
         }
+    }
+
+    private void HandleConnected()
+    {
+        _statusText.text = "Connected!";
+
+        _menuPanel.SetActive(false);
+        _lobbyPanel.SetActive(true);
+
+        _roomIdText.text =
+            InstanceFinder.IsServerStarted
+            ? _roomManager.CurrentHostAddress
+            : string.Empty;
+    }
+
+    private void HandleDisconnected()
+    {
+        _statusText.text = "Disconnected";
+
+        _menuPanel.SetActive(true);
+        _lobbyPanel.SetActive(false);
+
+        _roomIdText.text = string.Empty;
     }
 }

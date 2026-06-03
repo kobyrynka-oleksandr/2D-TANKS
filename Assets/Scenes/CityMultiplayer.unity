@@ -2098,14 +2098,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb15079edc553514fae176bc237b422e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BonusSpawnerNet
-  m_SpawnPoints:
+  _spawnPoints:
   - {fileID: 643239888}
   - {fileID: 1337010798}
-  m_BonusPrefabs:
+  _bonusPrefabs:
   - {fileID: -6012675201904929783, guid: 82533c83ff663fd4fb69042168d2b55c, type: 3}
   - {fileID: 6434831465466725018, guid: db9ae30056a5c024784e1bb85b39771b, type: 3}
   - {fileID: -3644944856025518752, guid: 32a452f6fe9ce914f8a8d7ad5779b54b, type: 3}
-  m_IsAlwaysSpawnOnTwoPositions: 1
+  _isAlwaysSpawnOnTwoPositions: 1
 --- !u!1 &337941794
 GameObject:
   m_ObjectHideFlags: 0
@@ -23930,7 +23930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77325883519f37248bb088628ccc08a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageUI
-  m_StageText: {fileID: 1730515809}
+  _stageText: {fileID: 1730515809}
 --- !u!114 &632519695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23943,9 +23943,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b0eb8586c7ce24ba91ad2d30a72a8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverUI
-  m_GameOverPanel: {fileID: 1975966770}
-  m_GUI: {fileID: 352240355}
-  m_FinalScore: {fileID: 1870662447}
+  _gameOverPanel: {fileID: 1975966770}
+  _gui: {fileID: 352240355}
+  _finalScore: {fileID: 1870662447}
 --- !u!114 &632519696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23958,9 +23958,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18f1a7e576b8b394b87167cc0c32318e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseInputTrigger
-  m_PauseAction: {fileID: -8519480641430305742, guid: 7e96bdd1e967f8b41bfb3938637a6b72, type: 3}
-  m_PauseButton: {fileID: 1491850226}
-  m_ResumeButton: {fileID: 900876658}
+  _pauseAction: {fileID: -8519480641430305742, guid: 7e96bdd1e967f8b41bfb3938637a6b72, type: 3}
+  _pauseButton: {fileID: 1491850226}
+  _resumeButton: {fileID: 900876658}
 --- !u!1 &634068104
 GameObject:
   m_ObjectHideFlags: 0
@@ -57964,12 +57964,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673a0216e3a408643b7e6717ec9b9fe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldObjectsSpawnerNet
-  m_FlagPrefab: {fileID: 3338863280954070745, guid: a42674a7251fb4b4999925526341fd16, type: 3}
-  m_BoxPrefab: {fileID: 6909110137313052336, guid: da3db201ab1575a4383011224ead2cf0, type: 3}
-  m_TurretPrefab: {fileID: 8905392275879805440, guid: 74fc957c9a802944b900fc7594bb99f8, type: 3}
-  m_GameManagerPrefab: {fileID: 4866438157364558205, guid: a3952cc2d42add54a90c9a98d61be54a, type: 3}
-  m_FlagSpawnPoint: {fileID: 1750117439}
-  m_BoxSpawnPoints:
+  _flagPrefab: {fileID: 3338863280954070745, guid: a42674a7251fb4b4999925526341fd16, type: 3}
+  _boxPrefab: {fileID: 6909110137313052336, guid: da3db201ab1575a4383011224ead2cf0, type: 3}
+  _turretPrefab: {fileID: 8905392275879805440, guid: 74fc957c9a802944b900fc7594bb99f8, type: 3}
+  _gameManagerPrefab: {fileID: 4866438157364558205, guid: a3952cc2d42add54a90c9a98d61be54a, type: 3}
+  _flagSpawnPoint: {fileID: 1750117439}
+  _boxSpawnPoints:
   - {fileID: 130148117}
   - {fileID: 1805140325}
   - {fileID: 406948675}
@@ -57989,15 +57989,15 @@ MonoBehaviour:
   - {fileID: 463224363}
   - {fileID: 839122041}
   - {fileID: 1518861228}
-  m_TurretSpawnPoints:
+  _turretSpawnPoints:
   - {fileID: 1898233120}
   - {fileID: 282586360}
-  m_EnemySpawnPoints:
+  _enemySpawnPoints:
   - {fileID: 1263556320}
   - {fileID: 1832162607}
   - {fileID: 2122057749}
-  m_BonusSpawner: {fileID: 293051017}
-  m_StartingPlayersAlive: 2
+  _bonusSpawner: {fileID: 293051017}
+  _startingPlayersAlive: 2
 --- !u!4 &814674386
 Transform:
   m_ObjectHideFlags: 0
@@ -59250,7 +59250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe71c30e309d6d4db5485689a053fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPointNet
-  m_DelayBetweenSpawns: 1.5
+  _delayBetweenSpawns: 1.5
 --- !u!1 &1292549102
 GameObject:
   m_ObjectHideFlags: 0
@@ -59302,9 +59302,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca3bdd67a21b2764e9f4d562a1dfaddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BonusUIManager
-  m_HealIcon: {fileID: 1704952237}
-  m_SpeedIcon: {fileID: 535779827}
-  m_DoubleDamageIcon: {fileID: 48495879}
+  _healIcon: {fileID: 1704952237}
+  _speedIcon: {fileID: 535779827}
+  _doubleDamageIcon: {fileID: 48495879}
 --- !u!1 &1337010797
 GameObject:
   m_ObjectHideFlags: 0
@@ -60593,8 +60593,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96a80d41871a474ba19e47efff5aba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MultiplayerPlayerSpawner
-  m_PlayerPrefab: {fileID: 8099292290965377604, guid: 23bbccb6f01901a40a09c4b70236e73c, type: 3}
-  m_SpawnPoints:
+  _playerPrefab: {fileID: 8099292290965377604, guid: 23bbccb6f01901a40a09c4b70236e73c, type: 3}
+  _spawnPoints:
   - {fileID: 1765222663}
   - {fileID: 2064777741}
 --- !u!1 &1659676903
@@ -61401,7 +61401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe71c30e309d6d4db5485689a053fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPointNet
-  m_DelayBetweenSpawns: 1.5
+  _delayBetweenSpawns: 1.5
 --- !u!1 &1849592869
 GameObject:
   m_ObjectHideFlags: 0
@@ -61952,7 +61952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eee164299ac53f4290b88c6039321bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MobileUIControl
-  AutoDisableOnNonMobilePlatform: 1
+  _autoDisableOnNonMobilePlatform: 1
 --- !u!114 &1944456975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62404,7 +62404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe71c30e309d6d4db5485689a053fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPointNet
-  m_DelayBetweenSpawns: 1.5
+  _delayBetweenSpawns: 1.5
 --- !u!1 &2126666812
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,29 +1,43 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;   
+using UnityEngine.UI;
 
 public class PauseInputTrigger : MonoBehaviour
 {
-    [SerializeField] private InputActionReference m_PauseAction;
-    [SerializeField] private Button m_PauseButton;
-    [SerializeField] private Button m_ResumeButton;
+    [SerializeField] private InputActionReference _pauseAction;
+    [SerializeField] private Button _pauseButton;
+    [SerializeField] private Button _resumeButton;
 
-    private bool m_IsPaused;
-    private float m_LastPauseTime;
-    private void OnEnable() => m_PauseAction.action.performed += OnPause;
-    private void OnDisable() => m_PauseAction.action.performed -= OnPause;
+    private bool _isPaused;
+    private float _lastPauseTime;
 
-    private void OnPause(InputAction.CallbackContext ctx)
+    private void OnEnable()
     {
-        if (Time.realtimeSinceStartup - m_LastPauseTime < 0.2f)
+        _pauseAction.action.performed += OnPause;
+    }
+
+    private void OnDisable()
+    {
+        _pauseAction.action.performed -= OnPause;
+    }
+
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        if (Time.realtimeSinceStartup - _lastPauseTime < 0.2f)
+        {
             return;
+        }
 
-        m_LastPauseTime = Time.realtimeSinceStartup;
-        m_IsPaused = !m_IsPaused;
+        _lastPauseTime = Time.realtimeSinceStartup;
+        _isPaused = !_isPaused;
 
-        if (m_IsPaused)
-            m_PauseButton.onClick.Invoke();
+        if (_isPaused)
+        {
+            _pauseButton.onClick.Invoke();
+        }
         else
-            m_ResumeButton.onClick.Invoke();
+        {
+            _resumeButton.onClick.Invoke();
+        }
     }
 }

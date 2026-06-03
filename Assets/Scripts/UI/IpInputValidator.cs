@@ -4,29 +4,33 @@ using UnityEngine;
 [RequireComponent(typeof(TMP_InputField))]
 public class IpInputValidator : MonoBehaviour
 {
-    private TMP_InputField m_InputField;
+    private TMP_InputField _inputField;
 
     private void Awake()
     {
-        m_InputField = GetComponent<TMP_InputField>();
-        m_InputField.onValidateInput += ValidateIpChar;
-    }
-
-    private char ValidateIpChar(string text, int charIndex, char addedChar)
-    {
-        if ((addedChar >= '0' && addedChar <= '9') || addedChar == '.')
-        {
-            return addedChar;
-        }
-
-        return '\0';
+        _inputField = GetComponent<TMP_InputField>();
+        _inputField.onValidateInput += ValidateIpCharacter;
     }
 
     private void OnDestroy()
     {
-        if (m_InputField != null)
+        if (_inputField != null)
         {
-            m_InputField.onValidateInput -= ValidateIpChar;
+            _inputField.onValidateInput -= ValidateIpCharacter;
         }
+    }
+
+    private char ValidateIpCharacter(
+        string text,
+        int charIndex,
+        char addedCharacter)
+    {
+        if ((addedCharacter >= '0' && addedCharacter <= '9')
+            || addedCharacter == '.')
+        {
+            return addedCharacter;
+        }
+
+        return '\0';
     }
 }

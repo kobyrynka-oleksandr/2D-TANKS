@@ -2,23 +2,23 @@ using UnityEngine;
 
 public class ScoutAINet : EnemyAINet
 {
-    [SerializeField] private LayerMask m_ObstacleMask;
+    [SerializeField] private LayerMask _obstacleMask;
 
     [Header("Player")]
-    [SerializeField] private float m_PlayerStopDistance = 4f;
-    [SerializeField] private float m_PlayerShootRange = 6f;
+    [SerializeField] private float _playerStopDistance = 4f;
+    [SerializeField] private float _playerShootRange = 6f;
 
     [Header("Defense")]
-    [SerializeField] private float m_DefenseStopDistance = 6f;
-    [SerializeField] private float m_DefenseShootRange = 8f;
+    [SerializeField] private float _defenseStopDistance = 6f;
+    [SerializeField] private float _defenseShootRange = 8f;
 
-    private bool m_IsChasing;
+    private bool _isChasing;
 
     protected override void OnUpdateAI()
     {
         Transform target;
 
-        if (m_IsChasing)
+        if (_isChasing)
         {
             Transform playerTarget = GetNearestPlayer();
             Transform defenseTarget = GetNearestDefenseTarget();
@@ -38,12 +38,12 @@ public class ScoutAINet : EnemyAINet
         float distance = Vector2.Distance(transform.position, targetCenter);
 
         bool isPlayerTarget = target.CompareTag("Player");
-        float stopDistance = isPlayerTarget ? m_PlayerStopDistance : m_DefenseStopDistance;
-        float shootRange = isPlayerTarget ? m_PlayerShootRange : m_DefenseShootRange;
+        float stopDistance = isPlayerTarget ? _playerStopDistance : _defenseStopDistance;
+        float shootRange = isPlayerTarget ? _playerShootRange : _defenseShootRange;
 
         if (distance > stopDistance)
         {
-            m_IsAiming = false;
+            _isAiming = false;
             MoveTo(target.position);
         }
         else
@@ -53,10 +53,10 @@ public class ScoutAINet : EnemyAINet
 
         if (distance <= shootRange)
         {
-            m_IsAiming = true;
-            RotateToward(targetCenter, m_RotateSpeed);
+            _isAiming = true;
+            RotateToward(targetCenter, _rotateSpeed);
 
-            if (IsFacing(targetCenter, 15f) && HasClearShot(targetCenter, m_ObstacleMask))
+            if (IsFacing(targetCenter, 15f) && HasClearShot(targetCenter, _obstacleMask))
             {
                 TryShoot();
             }
@@ -65,11 +65,11 @@ public class ScoutAINet : EnemyAINet
 
     public void OnPlayerEnteredAggro()
     {
-        m_IsChasing = true;
+        _isChasing = true;
     }
 
     public void OnPlayerExitedChase()
     {
-        m_IsChasing = false;
+        _isChasing = false;
     }
 }

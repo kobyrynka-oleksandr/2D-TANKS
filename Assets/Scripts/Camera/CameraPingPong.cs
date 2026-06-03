@@ -2,19 +2,21 @@ using UnityEngine;
 
 public class CameraPingPong : MonoBehaviour
 {
-    [SerializeField] private Transform m_PointA;
-    [SerializeField] private Transform m_PointB;
-    [SerializeField] private float m_Speed = 2f;
+    [SerializeField] private Transform _pointA;
+    [SerializeField] private Transform _pointB;
+    [SerializeField] private float _speed = 2f;
 
-    private bool m_GoingToB = true;
+    private bool _isGoingToB = true;
 
     private void Update()
     {
-        Transform target = m_GoingToB ? m_PointB : m_PointA;
+        Transform target = _isGoingToB ? _pointB : _pointA;
 
-        transform.position = Vector3.MoveTowards(transform.position, target.position, m_Speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, target.position, _speed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, target.position) < 0.01f)
-            m_GoingToB = !m_GoingToB;
+        {
+            _isGoingToB = !_isGoingToB;
+        }
     }
 }

@@ -237,9 +237,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2482d43c60f4a74bbb45a7a6be923b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardRow
-  m_RankText: {fileID: 1913680297366565770}
-  m_NameText: {fileID: 8406596645842003417}
-  m_StageText: {fileID: 2036959034357636260}
+  _rankText: {fileID: 1913680297366565770}
+  _nameText: {fileID: 8406596645842003417}
+  _stageText: {fileID: 2036959034357636260}
 --- !u!114 &1230380397220338335
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,29 +3,63 @@ using UnityEngine.UI;
 
 public class SettingsUI : MonoBehaviour
 {
-    [SerializeField] private Slider m_MusicSlider;
-    [SerializeField] private Slider m_SfxSlider;
-    [SerializeField] private Toggle m_MusicToggle;
-    [SerializeField] private Toggle m_SfxToggle;
+    [SerializeField] private Slider _musicSlider;
+    [SerializeField] private Slider _sfxSlider;
+    [SerializeField] private Toggle _musicToggle;
+    [SerializeField] private Toggle _sfxToggle;
 
     private void OnEnable()
     {
-        m_MusicSlider.onValueChanged.RemoveAllListeners();
-        m_SfxSlider.onValueChanged.RemoveAllListeners();
-        m_MusicToggle.onValueChanged.RemoveAllListeners();
-        m_SfxToggle.onValueChanged.RemoveAllListeners();
+        ClearListeners();
 
-        m_MusicSlider.value = AudioManager.Instance.MusicVolume;
-        m_SfxSlider.value = AudioManager.Instance.SfxVolume;
-        m_MusicToggle.isOn = !AudioManager.Instance.MusicMuted;
-        m_SfxToggle.isOn = !AudioManager.Instance.SfxMuted;
+        LoadCurrentSettings();
 
-        m_MusicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
-        m_SfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSfxVolume);
-        m_MusicToggle.onValueChanged.AddListener(OnMusicToggle);
-        m_SfxToggle.onValueChanged.AddListener(OnSfxToggle);
+        AddListeners();
     }
 
-    private void OnMusicToggle(bool on) => AudioManager.Instance.SetMusicMuted(!on);
-    private void OnSfxToggle(bool on) => AudioManager.Instance.SetSfxMuted(!on);
+    private void ClearListeners()
+    {
+        _musicSlider.onValueChanged.RemoveAllListeners();
+        _sfxSlider.onValueChanged.RemoveAllListeners();
+
+        _musicToggle.onValueChanged.RemoveAllListeners();
+        _sfxToggle.onValueChanged.RemoveAllListeners();
+    }
+
+    private void LoadCurrentSettings()
+    {
+        _musicSlider.value = AudioManager.Instance.MusicVolume;
+        _sfxSlider.value = AudioManager.Instance.SfxVolume;
+
+        _musicToggle.isOn =
+            !AudioManager.Instance.IsMusicMuted;
+
+        _sfxToggle.isOn =
+            !AudioManager.Instance.IsSfxMuted;
+    }
+
+    private void AddListeners()
+    {
+        _musicSlider.onValueChanged.AddListener(
+            AudioManager.Instance.SetMusicVolume);
+
+        _sfxSlider.onValueChanged.AddListener(
+            AudioManager.Instance.SetSfxVolume);
+
+        _musicToggle.onValueChanged.AddListener(
+            OnMusicToggle);
+
+        _sfxToggle.onValueChanged.AddListener(
+            OnSfxToggle);
+    }
+
+    private void OnMusicToggle(bool enabled)
+    {
+        AudioManager.Instance.SetMusicMuted(!enabled);
+    }
+
+    private void OnSfxToggle(bool enabled)
+    {
+        AudioManager.Instance.SetSfxMuted(!enabled);
+    }
 }

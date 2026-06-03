@@ -241,12 +241,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa385afd7e0650a43adc80bf9b2d3427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  m_Mixer: {fileID: 24100000, guid: 651c500cc99997c4383f561defef6600, type: 2}
-  m_MusicSource: {fileID: 6385755105581732975}
-  m_SfxSource: {fileID: 987195279878610959}
-  m_ButtonClickClip: {fileID: 8300000, guid: 2ae4163b477814141acf57f846bbbbb4, type: 3}
-  m_MusicBaseDb: -20
-  m_SfxBaseDb: -8
+  _mixer: {fileID: 24100000, guid: 651c500cc99997c4383f561defef6600, type: 2}
+  _musicSource: {fileID: 6385755105581732975}
+  _sfxSource: {fileID: 6385755105581732975}
+  _buttonClickClip: {fileID: 8300000, guid: 2ae4163b477814141acf57f846bbbbb4, type: 3}
+  _musicBaseDb: -20
+  _sfxBaseDb: -8
 --- !u!114 &1544479534550746702
 MonoBehaviour:
   m_ObjectHideFlags: 0

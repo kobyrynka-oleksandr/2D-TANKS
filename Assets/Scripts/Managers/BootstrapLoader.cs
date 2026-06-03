@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class BootstrapLoader : MonoBehaviour
 {
-    [SerializeField] private string m_FirstScene = "Menu Scene";
+    [SerializeField] private string _firstScene = "Menu Scene";
 
     private void Start()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(m_FirstScene);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(_firstScene);
     }
 }

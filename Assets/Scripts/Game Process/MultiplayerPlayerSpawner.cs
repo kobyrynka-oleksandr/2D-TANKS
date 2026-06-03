@@ -6,29 +6,34 @@ using UnityEngine;
 
 public class MultiplayerPlayerSpawner : MonoBehaviour
 {
-    [SerializeField] private NetworkObject m_PlayerPrefab;
-    [SerializeField] private Transform[] m_SpawnPoints;
+    [SerializeField] private NetworkObject _playerPrefab;
+    [SerializeField] private Transform[] _spawnPoints;
 
-    private bool m_Spawned;
+    private bool _isSpawned;
 
     private IEnumerator Start()
     {
         yield return null;
 
-        if (!InstanceFinder.IsServerStarted || m_Spawned)
+        if (!InstanceFinder.IsServerStarted || _isSpawned)
+        {
             yield break;
+        }
 
-        m_Spawned = true;
+        _isSpawned = true;
 
         int index = 0;
-        foreach (NetworkConnection conn in InstanceFinder.ServerManager.Clients.Values)
-        {
-            if (index >= m_SpawnPoints.Length)
-                break;
 
-            Transform spawnPoint = m_SpawnPoints[index];
-            NetworkObject player = Instantiate(m_PlayerPrefab, spawnPoint.position, spawnPoint.rotation);
-            InstanceFinder.ServerManager.Spawn(player, conn);
+        foreach (NetworkConnection connection in InstanceFinder.ServerManager.Clients.Values)
+        {
+            if (index >= _spawnPoints.Length)
+            {
+                break;
+            }
+
+            Transform spawnPoint = _spawnPoints[index];
+            NetworkObject player = Instantiate(_playerPrefab, spawnPoint.position, spawnPoint.rotation);
+            InstanceFinder.ServerManager.Spawn(player, connection);
 
             index++;
         }

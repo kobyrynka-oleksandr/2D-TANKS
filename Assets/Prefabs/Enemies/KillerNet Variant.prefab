@@ -252,13 +252,13 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 6756167331531716060}
   _networkObjectCache: {fileID: 6756167331531716060}
-  m_ShellPrefab: {fileID: 3955092541123211099, guid: 2650d3e1a4364bf4b8ba355104a8908a, type: 3}
-  m_FireTransform: {fileID: 3515331681409234767}
-  m_BaseShellSpeed: 10
-  m_BaseShotCooldown: 0.5
-  m_MaxDamage: 80
-  m_ExplosionRadius: 0.5
-  m_ShootingAudio: {fileID: 236645336604952478}
+  _shellPrefab: {fileID: 3955092541123211099, guid: 2650d3e1a4364bf4b8ba355104a8908a, type: 3}
+  _fireTransform: {fileID: 3515331681409234767}
+  _baseShellSpeed: 10
+  _baseShotCooldown: 0.5
+  _maxDamage: 80
+  _explosionRadius: 0.5
+  _shootingAudio: {fileID: 236645336604952478}
 --- !u!114 &3411414519907353386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,9 +274,9 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 6756167331531716060}
   _networkObjectCache: {fileID: 6756167331531716060}
-  m_StartingHealth: 150
-  m_Slider: {fileID: 6705840770193760997}
-  m_ExplosionParticles: {fileID: 3917517711783266675}
+  _startingHealth: 150
+  _slider: {fileID: 6705840770193760997}
+  _explosionParticles: {fileID: 3917517711783266675}
 --- !u!114 &5764278495811443165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,13 +292,13 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 6756167331531716060}
   _networkObjectCache: {fileID: 6756167331531716060}
-  m_FireRate: 2.5
-  m_RotateSpeed: 80
-  m_MoveSpeed: 3.5
-  m_TargetSearchInterval: 0.5
-  m_StopDistance: 4
-  m_ShootRange: 8
-  m_ObstacleMask:
+  _fireRate: 2.5
+  _rotateSpeed: 80
+  _moveSpeed: 3.5
+  _targetSearchInterval: 0.5
+  _stopDistance: 4
+  _shootRange: 8
+  _obstacleMask:
     serializedVersion: 2
     m_Bits: 64
 --- !u!114 &6756167331531716060

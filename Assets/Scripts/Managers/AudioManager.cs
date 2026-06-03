@@ -5,64 +5,112 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    [SerializeField] private AudioMixer m_Mixer;
-    [SerializeField] private AudioSource m_MusicSource;
-    [SerializeField] private AudioSource m_SfxSource;
-    [SerializeField] private AudioClip m_ButtonClickClip;
+    [SerializeField] private AudioMixer _mixer;
+    [SerializeField] private AudioSource _musicSource;
+    [SerializeField] private AudioSource _sfxSource;
+    [SerializeField] private AudioClip _buttonClickClip;
 
     [Header("Base Levels = 100%")]
-    [SerializeField] private float m_MusicBaseDb = -20f;
-    [SerializeField] private float m_SfxBaseDb = -8f;
+    [SerializeField] private float _musicBaseDb = -20f;
+    [SerializeField] private float _sfxBaseDb = -8f;
 
-    private float m_MusicVolume = 1f;
-    private float m_SfxVolume = 1f;
-    private bool m_MusicMuted;
-    private bool m_SfxMuted;
+    private float _musicVolume = 1f;
+    private float _sfxVolume = 1f;
 
-    public float MusicVolume => m_MusicVolume;
-    public float SfxVolume => m_SfxVolume;
-    public bool MusicMuted => m_MusicMuted;
-    public bool SfxMuted => m_SfxMuted;
+    private bool _isMusicMuted;
+    private bool _isSfxMuted;
+
+    public float MusicVolume => _musicVolume;
+    public float SfxVolume => _sfxVolume;
+
+    public bool IsMusicMuted => _isMusicMuted;
+    public bool IsSfxMuted => _isSfxMuted;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        InitializeSingleton();
     }
 
     public void SetMusicVolume(float value)
     {
-        m_MusicVolume = value;
-        if (!m_MusicMuted)
-            m_Mixer.SetFloat("MusicVolume", ToDb(m_MusicBaseDb, value));
+        _musicVolume = value;
+
+        if (!_isMusicMuted)
+        {
+            ApplyMusicVolume();
+        }
     }
 
     public void SetSfxVolume(float value)
     {
-        m_SfxVolume = value;
-        if (!m_SfxMuted)
-            m_Mixer.SetFloat("SFXVolume", ToDb(m_SfxBaseDb, value));
+        _sfxVolume = value;
+
+        if (!_isSfxMuted)
+        {
+            ApplySfxVolume();
+        }
     }
 
-    public void SetMusicMuted(bool muted)
+    public void SetMusicMuted(bool isMuted)
     {
-        m_MusicMuted = muted;
-        m_Mixer.SetFloat("MusicVolume", muted ? -80f : ToDb(m_MusicBaseDb, m_MusicVolume));
+        _isMusicMuted = isMuted;
+        ApplyMusicVolume();
     }
 
-    public void SetSfxMuted(bool muted)
+    public void SetSfxMuted(bool isMuted)
     {
-        m_SfxMuted = muted;
-        m_Mixer.SetFloat("SFXVolume", muted ? -80f : ToDb(m_SfxBaseDb, m_SfxVolume));
+        _isSfxMuted = isMuted;
+        ApplySfxVolume();
     }
 
-    private float ToDb(float baseDb, float slider)
+    public void PlayMusic(AudioClip clip)
     {
-        return baseDb + 20f * Mathf.Log10(Mathf.Max(slider, 0.0001f));
+        _musicSource.clip = clip;
+        _musicSource.Play();
     }
 
-    public void PlayMusic(AudioClip clip) { m_MusicSource.clip = clip; m_MusicSource.Play(); }
-    public void StopMusic() => m_MusicSource.Stop();
-    public void PlayClick() => m_SfxSource.PlayOneShot(m_ButtonClickClip);
+    public void StopMusic()
+    {
+        _musicSource.Stop();
+    }
+
+    public void PlayClick()
+    {
+        _sfxSource.PlayOneShot(_buttonClickClip);
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void ApplyMusicVolume()
+    {
+        float volume = _isMusicMuted
+            ? -80f
+            : ConvertToDb(_musicBaseDb, _musicVolume);
+
+        _mixer.SetFloat("MusicVolume", volume);
+    }
+
+    private void ApplySfxVolume()
+    {
+        float volume = _isSfxMuted
+            ? -80f
+            : ConvertToDb(_sfxBaseDb, _sfxVolume);
+
+        _mixer.SetFloat("SFXVolume", volume);
+    }
+
+    private float ConvertToDb(float baseDb, float sliderValue)
+    {
+        return baseDb + 20f * Mathf.Log10(Mathf.Max(sliderValue, 0.0001f));
+    }
 }

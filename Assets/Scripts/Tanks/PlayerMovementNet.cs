@@ -10,96 +10,58 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(NetworkObject))]
 public class PlayerMovementNet : NetworkBehaviour
 {
-    [SerializeField] private float m_Speed = 5f;
-    [SerializeField] private float m_TurnSpeed = 180f;
+    [SerializeField] private float _speed = 5f;
+    [SerializeField] private float _turnSpeed = 180f;
 
-    private Rigidbody2D m_Rigidbody;
-    private TankInputUser m_InputUser;
+    private Rigidbody2D _rigidbody;
+    private TankInputUser _inputUser;
 
-    private InputAction m_MoveAction;
-    private InputAction m_TurnAction;
+    private InputAction _moveAction;
+    private InputAction _turnAction;
 
-    private float m_MovementInputValue;
-    private float m_TurnInputValue;
+    private float _movementInputValue;
+    private float _turnInputValue;
 
-    private float m_BaseSpeed;
-    private Coroutine m_SpeedCoroutine;
+    private float _baseSpeed;
 
-    private readonly SyncVar<float> m_SpeedSync = new();
+    private Coroutine _speedCoroutine;
+
+    private readonly SyncVar<float> _speedSync = new();
 
     private void Awake()
     {
-        m_Rigidbody = GetComponent<Rigidbody2D>();
-        m_InputUser = GetComponent<TankInputUser>();
-        m_SpeedSync.OnChange += OnSpeedChanged;
-    }
-
-    private void OnDestroy()
-    {
-        m_SpeedSync.OnChange -= OnSpeedChanged;
-    }
-
-    public override void OnStartNetwork()
-    {
-        base.OnStartNetwork();
-        m_BaseSpeed = m_Speed;
-    }
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-
-        if (IsOwner == false)
-        {
-            if (m_InputUser != null)
-            {
-                m_InputUser.enabled = false;
-            }
-
-            return;
-        }
-
-        if (m_InputUser == null)
-        {
-            m_InputUser = gameObject.AddComponent<TankInputUser>();
-        }
-
-        m_MoveAction = m_InputUser.ActionAsset.FindAction("Vertical");
-        m_TurnAction = m_InputUser.ActionAsset.FindAction("Horizontal");
-
-        m_MoveAction?.Enable();
-        m_TurnAction?.Enable();
+        CacheComponents();
+        SubscribeEvents();
     }
 
     private void OnEnable()
     {
-        m_MovementInputValue = 0f;
-        m_TurnInputValue = 0f;
+        ResetInputValues();
     }
 
     private void OnDisable()
     {
-        if (m_Rigidbody != null)
-        {
-            m_Rigidbody.linearVelocity = Vector2.zero;
-            m_Rigidbody.angularVelocity = 0f;
-        }
+        ResetPhysics();
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeEvents();
     }
 
     private void Update()
     {
-        if (IsOwner == false)
+        if (!IsOwner)
         {
             return;
         }
 
-        m_MovementInputValue = m_MoveAction?.ReadValue<float>() ?? 0f;
-        m_TurnInputValue = m_TurnAction?.ReadValue<float>() ?? 0f;
+        ReadInput();
     }
 
     private void FixedUpdate()
     {
-        if (IsOwner == false)
+        if (!IsOwner)
         {
             return;
         }
@@ -108,57 +70,160 @@ public class PlayerMovementNet : NetworkBehaviour
         Turn();
     }
 
-    private void Move()
+    public override void OnStartNetwork()
     {
-        Vector2 movement = (Vector2)transform.up * m_MovementInputValue * m_Speed;
-        m_Rigidbody.linearVelocity = movement;
+        base.OnStartNetwork();
+
+        _baseSpeed = _speed;
     }
 
-    private void Turn()
+    public override void OnStartClient()
     {
-        float turnAmount = -m_TurnInputValue * m_TurnSpeed * Time.fixedDeltaTime;
-        m_Rigidbody.MoveRotation(m_Rigidbody.rotation + turnAmount);
-    }
+        base.OnStartClient();
 
-    [Server]
-    public void ApplySpeedBonusServer(float multiplier, float duration)
-    {
-        if (m_SpeedCoroutine != null)
+        if (!IsOwner)
         {
-            StopCoroutine(m_SpeedCoroutine);
+            DisableRemotePlayerInput();
+            return;
         }
 
-        m_SpeedCoroutine = StartCoroutine(SpeedBonusRoutineServer(multiplier, duration));
+        InitializeInput();
     }
 
     [Server]
-    private IEnumerator SpeedBonusRoutineServer(float multiplier, float duration)
+    public void ApplySpeedBonusServer(
+        float multiplier,
+        float duration)
     {
-        m_SpeedSync.Value = m_BaseSpeed * multiplier;
+        if (_speedCoroutine != null)
+        {
+            StopCoroutine(_speedCoroutine);
+        }
+
+        _speedCoroutine =
+            StartCoroutine(
+                SpeedBonusRoutineServer(
+                    multiplier,
+                    duration));
+    }
+
+    [Server]
+    private IEnumerator SpeedBonusRoutineServer(
+        float multiplier,
+        float duration)
+    {
+        _speedSync.Value = _baseSpeed * multiplier;
+
         TargetShowSpeedBonus(Owner);
 
         yield return new WaitForSeconds(duration);
 
-        m_SpeedSync.Value = m_BaseSpeed;
+        _speedSync.Value = _baseSpeed;
+
         TargetHideSpeedBonus(Owner);
 
-        m_SpeedCoroutine = null;
+        _speedCoroutine = null;
     }
 
-    private void OnSpeedChanged(float prev, float next, bool asServer)
+    private void Move()
     {
-        m_Speed = next;
+        Vector2 movement = (Vector2)transform.up * _movementInputValue * _speed;
+
+        _rigidbody.linearVelocity = movement;
+    }
+
+    private void Turn()
+    {
+        float turnAmount = -_turnInputValue * _turnSpeed * Time.fixedDeltaTime;
+
+        _rigidbody.MoveRotation(_rigidbody.rotation + turnAmount);
+    }
+
+    private void ReadInput()
+    {
+        _movementInputValue = _moveAction?.ReadValue<float>() ?? 0f;
+
+        _turnInputValue = _turnAction?.ReadValue<float>() ?? 0f;
+    }
+
+    private void OnSpeedChanged(
+        float previous,
+        float next,
+        bool asServer)
+    {
+        _speed = next;
     }
 
     [TargetRpc]
-    private void TargetShowSpeedBonus(NetworkConnection conn)
+    private void TargetShowSpeedBonus(
+        NetworkConnection connection)
     {
         BonusUIManager.Instance?.ShowSpeed();
     }
 
     [TargetRpc]
-    private void TargetHideSpeedBonus(NetworkConnection conn)
+    private void TargetHideSpeedBonus(
+        NetworkConnection connection)
     {
         BonusUIManager.Instance?.HideSpeed();
+    }
+
+    private void CacheComponents()
+    {
+        _rigidbody =
+            GetComponent<Rigidbody2D>();
+
+        _inputUser =
+            GetComponent<TankInputUser>();
+    }
+
+    private void SubscribeEvents()
+    {
+        _speedSync.OnChange += OnSpeedChanged;
+    }
+
+    private void UnsubscribeEvents()
+    {
+        _speedSync.OnChange -= OnSpeedChanged;
+    }
+
+    private void InitializeInput()
+    {
+        if (_inputUser == null)
+        {
+            _inputUser = gameObject.AddComponent<TankInputUser>();
+        }
+
+        _moveAction = _inputUser.ActionAsset.FindAction("Vertical");
+
+        _turnAction = _inputUser.ActionAsset.FindAction("Horizontal");
+
+        _moveAction?.Enable();
+        _turnAction?.Enable();
+    }
+
+    private void DisableRemotePlayerInput()
+    {
+        if (_inputUser != null)
+        {
+            _inputUser.enabled = false;
+        }
+    }
+
+    private void ResetInputValues()
+    {
+        _movementInputValue = 0f;
+        _turnInputValue = 0f;
+    }
+
+    private void ResetPhysics()
+    {
+        if (_rigidbody == null)
+        {
+            return;
+        }
+
+        _rigidbody.linearVelocity = Vector2.zero;
+        _rigidbody.angularVelocity = 0f;
     }
 }

@@ -9,33 +9,33 @@ using UnityEngine.AI;
 [RequireComponent(typeof(TankShootingNet))]
 public abstract class EnemyAINet : NetworkBehaviour
 {
-    [SerializeField] protected float m_FireRate = 1.5f;
-    [SerializeField] protected float m_RotateSpeed = 120f;
-    [SerializeField] protected float m_MoveSpeed = 3.5f;
+    [SerializeField] protected float _fireRate = 1.5f;
+    [SerializeField] protected float _rotateSpeed = 120f;
+    [SerializeField] protected float _moveSpeed = 3.5f;
 
     [Header("Target Search")]
-    [SerializeField] private float m_TargetSearchInterval = 0.5f;
+    [SerializeField] private float _targetSearchInterval = 0.5f;
 
-    protected NavMeshAgent m_Agent;
-    protected TankShootingNet m_Shooting;
-    protected float m_FireTimer;
-    protected bool m_IsAiming;
+    protected NavMeshAgent _agent;
+    protected TankShootingNet _shooting;
+    protected float _fireTimer;
+    protected bool _isAiming;
 
-    protected Transform m_FlagTarget;
-    protected Collider2D m_FlagCollider;
+    protected Transform _flagTarget;
+    protected Collider2D _flagCollider;
 
-    private float m_TargetSearchTimer;
+    private float _targetSearchTimer;
 
     protected virtual void Awake()
     {
-        m_Agent = GetComponent<NavMeshAgent>();
-        m_Shooting = GetComponent<TankShootingNet>();
+        _agent = GetComponent<NavMeshAgent>();
+        _shooting = GetComponent<TankShootingNet>();
 
-        m_Shooting.m_IsComputerControlled = true;
+        _shooting.IsComputerControlled = true;
 
-        m_Agent.updateRotation = false;
-        m_Agent.updateUpAxis = false;
-        m_Agent.speed = m_MoveSpeed;
+        _agent.updateRotation = false;
+        _agent.updateUpAxis = false;
+        _agent.speed = _moveSpeed;
     }
 
     protected virtual void Update()
@@ -45,11 +45,11 @@ public abstract class EnemyAINet : NetworkBehaviour
             return;
         }
 
-        m_FireTimer += Time.deltaTime;
+        _fireTimer += Time.deltaTime;
         UpdateFlagTarget();
         OnUpdateAI();
 
-        if (!m_IsAiming)
+        if (!_isAiming)
         {
             UpdateRotationByVelocity();
         }
@@ -59,19 +59,19 @@ public abstract class EnemyAINet : NetworkBehaviour
 
     protected void UpdateFlagTarget()
     {
-        if (m_FlagTarget != null && m_FlagTarget.gameObject.activeInHierarchy)
+        if (_flagTarget != null && _flagTarget.gameObject.activeInHierarchy)
         {
             return;
         }
 
-        m_TargetSearchTimer -= Time.deltaTime;
+        _targetSearchTimer -= Time.deltaTime;
 
-        if (m_TargetSearchTimer > 0f)
+        if (_targetSearchTimer > 0f)
         {
             return;
         }
 
-        m_TargetSearchTimer = m_TargetSearchInterval;
+        _targetSearchTimer = _targetSearchInterval;
 
         if (GameManagerNet.Instance == null || GameManagerNet.Instance.WorldObjectsSpawner == null)
         {
@@ -85,8 +85,8 @@ public abstract class EnemyAINet : NetworkBehaviour
             return;
         }
 
-        m_FlagTarget = flagHealth.transform;
-        m_FlagCollider = flagHealth.GetComponent<Collider2D>();
+        _flagTarget = flagHealth.transform;
+        _flagCollider = flagHealth.GetComponent<Collider2D>();
     }
 
     protected Transform GetNearestPlayer()
@@ -94,14 +94,14 @@ public abstract class EnemyAINet : NetworkBehaviour
         Transform nearest = null;
         float nearestDistance = float.MaxValue;
 
-        foreach (NetworkConnection conn in InstanceFinder.ServerManager.Clients.Values)
+        foreach (NetworkConnection connection in InstanceFinder.ServerManager.Clients.Values)
         {
-            if (conn == null || conn.FirstObject == null)
+            if (connection == null || connection.FirstObject == null)
             {
                 continue;
             }
 
-            Transform playerTransform = conn.FirstObject.transform;
+            Transform playerTransform = connection.FirstObject.transform;
 
             if (!playerTransform.gameObject.activeInHierarchy)
             {
@@ -162,20 +162,20 @@ public abstract class EnemyAINet : NetworkBehaviour
     {
         Transform turretTarget = GetNearestTurret();
 
-        if (m_FlagTarget == null || !m_FlagTarget.gameObject.activeInHierarchy)
+        if (_flagTarget == null || !_flagTarget.gameObject.activeInHierarchy)
         {
             return turretTarget;
         }
 
         if (turretTarget == null)
         {
-            return m_FlagTarget;
+            return _flagTarget;
         }
 
-        float flagDistance = Vector2.Distance(transform.position, m_FlagTarget.position);
+        float flagDistance = Vector2.Distance(transform.position, _flagTarget.position);
         float turretDistance = Vector2.Distance(transform.position, turretTarget.position);
 
-        return flagDistance <= turretDistance ? m_FlagTarget : turretTarget;
+        return flagDistance <= turretDistance ? _flagTarget : turretTarget;
     }
 
     protected Transform GetCloserTarget(Transform firstTarget, Transform secondTarget)
@@ -215,8 +215,8 @@ public abstract class EnemyAINet : NetworkBehaviour
 
     protected bool RotateToward(Vector3 target, float speed)
     {
-        Vector2 dir = ((Vector2)target - (Vector2)transform.position).normalized;
-        float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+        Vector2 direction = ((Vector2)target - (Vector2)transform.position).normalized;
+        float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
         float currentAngle = transform.eulerAngles.z;
         float newAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, speed * Time.deltaTime);
 
@@ -226,52 +226,52 @@ public abstract class EnemyAINet : NetworkBehaviour
 
     protected void UpdateRotationByVelocity()
     {
-        if (m_Agent.velocity.sqrMagnitude < 0.01f)
+        if (_agent.velocity.sqrMagnitude < 0.01f)
         {
             return;
         }
 
-        float angle = Mathf.Atan2(m_Agent.velocity.y, m_Agent.velocity.x) * Mathf.Rad2Deg - 90f;
+        float angle = Mathf.Atan2(_agent.velocity.y, _agent.velocity.x) * Mathf.Rad2Deg - 90f;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
     protected void MoveTo(Vector3 target)
     {
-        if (!m_Agent.isOnNavMesh)
+        if (!_agent.isOnNavMesh)
         {
             return;
         }
 
-        m_Agent.isStopped = false;
-        m_Agent.SetDestination(target);
+        _agent.isStopped = false;
+        _agent.SetDestination(target);
     }
 
     protected void StopMoving()
     {
-        if (!m_Agent.isOnNavMesh)
+        if (!_agent.isOnNavMesh)
         {
             return;
         }
 
-        m_Agent.isStopped = true;
-        m_Agent.ResetPath();
+        _agent.isStopped = true;
+        _agent.ResetPath();
     }
 
     protected void TryShoot()
     {
-        if (m_FireTimer < m_FireRate)
+        if (_fireTimer < _fireRate)
         {
             return;
         }
 
-        m_FireTimer = 0f;
-        m_Shooting.FireFromAI();
+        _fireTimer = 0f;
+        _shooting.FireFromAI();
     }
 
     protected bool IsFacing(Vector2 target, float toleranceDeg)
     {
-        Vector2 dirToTarget = (target - (Vector2)transform.position).normalized;
-        float angle = Vector2.Angle((Vector2)transform.up, dirToTarget);
+        Vector2 directionToTarget = (target - (Vector2)transform.position).normalized;
+        float angle = Vector2.Angle((Vector2)transform.up, directionToTarget);
         return angle < toleranceDeg;
     }
 
@@ -281,15 +281,15 @@ public abstract class EnemyAINet : NetworkBehaviour
         Vector2 direction = (target - origin).normalized;
         float distance = Vector2.Distance(origin, target);
         Vector2 rayStart = origin + direction * 0.6f;
-        float rayDist = distance - 0.6f - 0.5f;
+        float rayDistance = distance - 0.6f - 0.5f;
 
-        if (rayDist <= 0f)
+        if (rayDistance <= 0f)
         {
             return true;
         }
 
-        RaycastHit2D hit = Physics2D.Raycast(rayStart, direction, rayDist, obstacleMask);
-        Debug.DrawRay(rayStart, direction * rayDist, hit.collider == null ? Color.green : Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(rayStart, direction, rayDistance, obstacleMask);
+        Debug.DrawRay(rayStart, direction * rayDistance, hit.collider == null ? Color.green : Color.red);
 
         return hit.collider == null;
     }

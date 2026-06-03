@@ -48,11 +48,11 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2833576960981672893}
   _networkObjectCache: {fileID: 2833576960981672893}
-  m_EnemyPrefabs:
+  _enemyPrefabs:
   - {fileID: 4947219000563157363, guid: 1b2e94134231c1d40a04fd7a3e509331, type: 3}
   - {fileID: 4953123845637424990, guid: f6bae8dc91419504596f86a9baf04972, type: 3}
   - {fileID: 2799048578264908390, guid: 9e6ab9c48e1f55147b709b47fe3e73b0, type: 3}
-  m_StageCooldown: 4
+  _stageCooldown: 4
 --- !u!114 &2833576960981672893
 MonoBehaviour:
   m_ObjectHideFlags: 0

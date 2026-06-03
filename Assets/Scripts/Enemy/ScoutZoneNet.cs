@@ -8,19 +8,19 @@ public enum ScoutZoneType
 
 public class ScoutZoneNet : MonoBehaviour
 {
-    [SerializeField] private ScoutZoneType m_ZoneType;
+    [SerializeField] private ScoutZoneType _zoneType;
 
-    private ScoutAINet m_Scout;
-    private int m_PlayersInside;
+    private ScoutAINet _scout;
+    private int _playersInside;
 
     private void Awake()
     {
-        m_Scout = GetComponentInParent<ScoutAINet>();
+        _scout = GetComponentInParent<ScoutAINet>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (m_Scout == null || !m_Scout.IsServerInitialized)
+        if (_scout == null || !_scout.IsServerInitialized)
         {
             return;
         }
@@ -30,17 +30,17 @@ public class ScoutZoneNet : MonoBehaviour
             return;
         }
 
-        m_PlayersInside++;
+        _playersInside++;
 
-        if (m_ZoneType == ScoutZoneType.Aggro)
+        if (_zoneType == ScoutZoneType.Aggro)
         {
-            m_Scout.OnPlayerEnteredAggro();
+            _scout.OnPlayerEnteredAggro();
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (m_Scout == null || !m_Scout.IsServerInitialized)
+        if (_scout == null || !_scout.IsServerInitialized)
         {
             return;
         }
@@ -50,11 +50,11 @@ public class ScoutZoneNet : MonoBehaviour
             return;
         }
 
-        m_PlayersInside = Mathf.Max(0, m_PlayersInside - 1);
+        _playersInside = Mathf.Max(0, _playersInside - 1);
 
-        if (m_ZoneType == ScoutZoneType.Chase && m_PlayersInside == 0)
+        if (_zoneType == ScoutZoneType.Chase && _playersInside == 0)
         {
-            m_Scout.OnPlayerExitedChase();
+            _scout.OnPlayerExitedChase();
         }
     }
 }

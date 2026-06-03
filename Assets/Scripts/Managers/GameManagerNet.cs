@@ -8,37 +8,44 @@ public class GameManagerNet : NetworkBehaviour
 {
     public static GameManagerNet Instance { get; private set; }
 
-    [SerializeField] private GameObject[] m_EnemyPrefabs;
-    [SerializeField] private float m_StageCooldown = 4f;
+    [SerializeField] private GameObject[] _enemyPrefabs;
+    [SerializeField] private float _stageCooldown = 4f;
 
-    private readonly SyncVar<int> m_CurrentStageSync = new();
-    private readonly SyncVar<bool> m_IsGameOverSync = new();
+    private readonly SyncVar<int> _currentStageSync = new();
+    private readonly SyncVar<bool> _isGameOverSync = new();
 
-    private SpawnPointNet[] m_SpawnPoints;
-    private BonusSpawnerNet m_BonusSpawner;
-    private WorldObjectsSpawnerNet m_WorldObjectsSpawner;
-    private int m_EnemiesAlive;
-    private int m_PlayersAlive;
-    private bool m_Initialized;
+    private SpawnPointNet[] _spawnPoints;
+    private BonusSpawnerNet _bonusSpawner;
+    private WorldObjectsSpawnerNet _worldObjectsSpawner;
 
-    public int CurrentStage => m_CurrentStageSync.Value;
-    public bool IsGameOver => m_IsGameOverSync.Value;
-    public WorldObjectsSpawnerNet WorldObjectsSpawner => m_WorldObjectsSpawner;
+    private int _enemiesAlive;
+    private int _playersAlive;
 
-    public event Action<int> OnStageChangedEvent;
-    public event Action<int> OnGameOverEvent;
+    private bool _isInitialized;
+
+    public int CurrentStage => _currentStageSync.Value;
+    public bool IsGameOver => _isGameOverSync.Value;
+
+    public WorldObjectsSpawnerNet WorldObjectsSpawner => _worldObjectsSpawner;
+
+    public event Action<int> StageChangedEvent;
+    public event Action<int> GameOverEvent;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        InitializeSingleton();
+        ConfigureApplication();
+    }
 
-        Instance = this;
-        Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;
+    private void OnEnable()
+    {
+        SubscribeSyncEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeSyncEvents();
+        UnsubscribeFlagEvents();
     }
 
     public void Initialize(
@@ -47,35 +54,26 @@ public class GameManagerNet : NetworkBehaviour
         WorldObjectsSpawnerNet worldObjectsSpawner,
         int playersAlive = 2)
     {
-        m_SpawnPoints = spawnPoints;
-        m_BonusSpawner = bonusSpawner;
-        m_WorldObjectsSpawner = worldObjectsSpawner;
-        m_PlayersAlive = playersAlive;
-        m_Initialized = true;
+        _spawnPoints = spawnPoints;
+        _bonusSpawner = bonusSpawner;
+        _worldObjectsSpawner = worldObjectsSpawner;
+
+        _playersAlive = playersAlive;
+        _isInitialized = true;
     }
 
     public override void OnStartServer()
     {
         base.OnStartServer();
 
-        if (m_Initialized == false)
+        if (!_isInitialized)
         {
             Debug.LogError("GameManagerNet: Initialize() must be called before Spawn.");
             return;
         }
 
-        if (m_WorldObjectsSpawner != null && m_WorldObjectsSpawner.FlagHealth != null)
-        {
-            m_WorldObjectsSpawner.FlagHealth.OnDeath += OnFlagDestroyed;
-        }
-        else
-        {
-            Debug.LogWarning("GameManagerNet: FlagHealth not found.");
-        }
-
-        m_IsGameOverSync.Value = false;
-        m_CurrentStageSync.Value = 0;
-
+        SubscribeFlagEvents();
+        ResetGameState();
         StartNextStage();
     }
 
@@ -83,42 +81,25 @@ public class GameManagerNet : NetworkBehaviour
     {
         base.OnStartClient();
 
-        OnStageChangedEvent?.Invoke(m_CurrentStageSync.Value);
+        StageChangedEvent?.Invoke(_currentStageSync.Value);
 
-        if (m_IsGameOverSync.Value == true)
+        if (_isGameOverSync.Value)
         {
-            OnGameOverEvent?.Invoke(m_CurrentStageSync.Value);
-        }
-    }
-
-    private void OnEnable()
-    {
-        m_CurrentStageSync.OnChange += OnStageChanged;
-        m_IsGameOverSync.OnChange += OnGameOverChanged;
-    }
-
-    private void OnDisable()
-    {
-        m_CurrentStageSync.OnChange -= OnStageChanged;
-        m_IsGameOverSync.OnChange -= OnGameOverChanged;
-
-        if (m_WorldObjectsSpawner != null && m_WorldObjectsSpawner.FlagHealth != null)
-        {
-            m_WorldObjectsSpawner.FlagHealth.OnDeath -= OnFlagDestroyed;
+            GameOverEvent?.Invoke(_currentStageSync.Value);
         }
     }
 
     [Server]
     public void OnEnemyDied()
     {
-        if (m_IsGameOverSync.Value == true)
+        if (_isGameOverSync.Value)
         {
             return;
         }
 
-        m_EnemiesAlive--;
+        _enemiesAlive--;
 
-        if (m_EnemiesAlive <= 0)
+        if (_enemiesAlive <= 0)
         {
             StartCoroutine(NextStageDelay());
         }
@@ -127,114 +108,190 @@ public class GameManagerNet : NetworkBehaviour
     [Server]
     public void OnPlayerDied()
     {
-        if (m_IsGameOverSync.Value == true)
+        if (_isGameOverSync.Value)
         {
             return;
         }
 
-        m_PlayersAlive--;
+        _playersAlive--;
 
-        if (m_PlayersAlive <= 0)
+        if (_playersAlive <= 0)
         {
-            OnLoss();
+            LoseGame();
         }
-    }
-
-    [Server]
-    private void OnFlagDestroyed()
-    {
-        OnLoss();
     }
 
     [Server]
     private void StartNextStage()
     {
-        if (m_IsGameOverSync.Value == true)
+        if (_isGameOverSync.Value)
         {
             return;
         }
 
-        int nextStage = m_CurrentStageSync.Value + 1;
-        m_CurrentStageSync.Value = nextStage;
-        m_EnemiesAlive = nextStage;
-
-        SpawnStage(nextStage);
-
-        if (m_BonusSpawner != null)
-        {
-            m_BonusSpawner.SpawnForStage();
-        }
+        IncreaseStage();
+        SpawnStage(CurrentStage);
+        SpawnBonuses();
     }
 
     [Server]
     private void SpawnStage(int stage)
     {
-        if (m_SpawnPoints == null || m_SpawnPoints.Length == 0)
+        if (!ValidateSpawnData())
         {
-            Debug.LogError("GameManagerNet: Spawn points are missing.");
             return;
         }
 
-        if (m_EnemyPrefabs == null || m_EnemyPrefabs.Length == 0)
-        {
-            Debug.LogError("GameManagerNet: Enemy prefabs are missing.");
-            return;
-        }
-
-        int pointCount = m_SpawnPoints.Length;
+        int spawnPointCount = _spawnPoints.Length;
 
         for (int i = 0; i < stage; i++)
         {
-            GameObject prefab = m_EnemyPrefabs[UnityEngine.Random.Range(0, m_EnemyPrefabs.Length)];
-            SpawnPointNet point = m_SpawnPoints[i % pointCount];
-            point.Enqueue(prefab, OnEnemyDied);
+            GameObject enemyPrefab =
+                _enemyPrefabs[UnityEngine.Random.Range(0, _enemyPrefabs.Length)];
+
+            SpawnPointNet spawnPoint =
+                _spawnPoints[i % spawnPointCount];
+
+            spawnPoint.Enqueue(enemyPrefab, OnEnemyDied);
         }
+    }
+
+    [Server]
+    private void LoseGame()
+    {
+        if (_isGameOverSync.Value)
+        {
+            return;
+        }
+
+        _isGameOverSync.Value = true;
+        ClearBonuses();
+    }
+
+    [Server]
+    private void FlagDestroyed()
+    {
+        LoseGame();
     }
 
     private IEnumerator NextStageDelay()
     {
-        if (m_BonusSpawner != null)
-        {
-            m_BonusSpawner.ClearBonuses();
-        }
+        ClearBonuses();
 
-        yield return new WaitForSeconds(m_StageCooldown);
+        yield return new WaitForSeconds(_stageCooldown);
 
-        if (m_IsGameOverSync.Value == false)
+        if (!_isGameOverSync.Value)
         {
             StartNextStage();
         }
     }
 
-    [Server]
-    private void OnLoss()
+    private void StageChanged(int previous, int next, bool asServer)
     {
-        if (m_IsGameOverSync.Value == true)
+        if (!asServer)
         {
+            StageChangedEvent?.Invoke(next);
+        }
+    }
+
+    private void GameOverChanged(bool previous, bool next, bool asServer)
+    {
+        if (!asServer && next)
+        {
+            GameOverEvent?.Invoke(CurrentStage);
+        }
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
             return;
         }
 
-        m_IsGameOverSync.Value = true;
+        Instance = this;
+    }
 
-        if (m_BonusSpawner != null)
+    private void ConfigureApplication()
+    {
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+    }
+
+    private void SubscribeSyncEvents()
+    {
+        _currentStageSync.OnChange += StageChanged;
+        _isGameOverSync.OnChange += GameOverChanged;
+    }
+
+    private void UnsubscribeSyncEvents()
+    {
+        _currentStageSync.OnChange -= StageChanged;
+        _isGameOverSync.OnChange -= GameOverChanged;
+    }
+
+    private void SubscribeFlagEvents()
+    {
+        if (_worldObjectsSpawner?.FlagHealth != null)
         {
-            m_BonusSpawner.ClearBonuses();
+            _worldObjectsSpawner.FlagHealth.DeathEvent += FlagDestroyed;
+            return;
+        }
+
+        Debug.LogWarning("GameManagerNet: FlagHealth not found.");
+    }
+
+    private void UnsubscribeFlagEvents()
+    {
+        if (_worldObjectsSpawner?.FlagHealth != null)
+        {
+            _worldObjectsSpawner.FlagHealth.DeathEvent -= FlagDestroyed;
         }
     }
 
-    private void OnStageChanged(int prev, int next, bool asServer)
+    private void ResetGameState()
     {
-        if (asServer == false)
+        _isGameOverSync.Value = false;
+        _currentStageSync.Value = 0;
+    }
+
+    private void IncreaseStage()
+    {
+        _currentStageSync.Value++;
+        _enemiesAlive = _currentStageSync.Value;
+    }
+
+    private void SpawnBonuses()
+    {
+        if (_bonusSpawner != null)
         {
-            OnStageChangedEvent?.Invoke(next);
+            _bonusSpawner.SpawnForStage();
         }
     }
 
-    private void OnGameOverChanged(bool prev, bool next, bool asServer)
+    private void ClearBonuses()
     {
-        if (asServer == false && next == true)
+        if (_bonusSpawner != null)
         {
-            OnGameOverEvent?.Invoke(CurrentStage);
+            _bonusSpawner.ClearBonuses();
         }
+    }
+
+    private bool ValidateSpawnData()
+    {
+        if (_spawnPoints == null || _spawnPoints.Length == 0)
+        {
+            Debug.LogError("GameManagerNet: Spawn points are missing.");
+            return false;
+        }
+
+        if (_enemyPrefabs == null || _enemyPrefabs.Length == 0)
+        {
+            Debug.LogError("GameManagerNet: Enemy prefabs are missing.");
+            return false;
+        }
+
+        return true;
     }
 }

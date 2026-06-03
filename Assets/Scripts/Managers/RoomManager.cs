@@ -1,45 +1,72 @@
 using FishNet;
-using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine;
 
 public class RoomManager : MonoBehaviour
 {
-    [SerializeField] private string m_ServerAddress = "localhost";
-    [SerializeField] private ushort m_Port = 7770;
+    [SerializeField] private string _serverAddress = "localhost";
+    [SerializeField] private ushort _port = 7770;
 
     public string CurrentHostAddress { get; private set; }
 
     public void CreateRoom()
     {
-        InstanceFinder.TransportManager.Transport.SetMaximumClients(2);
+        ConfigureRoom();
 
-        CurrentHostAddress = GetLocalIPv4();
+        CurrentHostAddress = GetLocalIpv4();
 
-        InstanceFinder.ServerManager.StartConnection(m_Port);
-        InstanceFinder.ClientManager.StartConnection(m_ServerAddress, m_Port);
+        StartServer();
+        StartClient(_serverAddress);
     }
 
     public void JoinRoom(string address)
     {
-        InstanceFinder.ClientManager.StartConnection(address, m_Port);
+        StartClient(address);
     }
 
     public void LeaveRoom()
     {
+        StopConnections();
+    }
+
+    private void ConfigureRoom()
+    {
+        InstanceFinder.TransportManager
+            .Transport
+            .SetMaximumClients(2);
+    }
+
+    private void StartServer()
+    {
+        InstanceFinder.ServerManager.StartConnection(_port);
+    }
+
+    private void StartClient(string address)
+    {
+        InstanceFinder.ClientManager.StartConnection(
+            address,
+            _port);
+    }
+
+    private void StopConnections()
+    {
         InstanceFinder.ClientManager.StopConnection();
+
         InstanceFinder.ServerManager.StopConnection(true);
     }
 
-    private string GetLocalIPv4()
+    private string GetLocalIpv4()
     {
-        IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+        IPHostEntry host =
+            Dns.GetHostEntry(Dns.GetHostName());
 
-        foreach (IPAddress ip in host.AddressList)
+        foreach (IPAddress ipAddress in host.AddressList)
         {
-            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            if (ipAddress.AddressFamily ==
+                AddressFamily.InterNetwork)
             {
-                return ip.ToString();
+                return ipAddress.ToString();
             }
         }
 

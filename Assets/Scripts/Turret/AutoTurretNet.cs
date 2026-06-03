@@ -171,9 +171,9 @@ public class AutoTurretNet : NetworkBehaviour
 
         if (shellExplosion != null)
         {
-            shellExplosion.m_MaxDamage = _maxDamage;
-            shellExplosion.m_ExplosionRadius = _explosionRadius;
-            shellExplosion.m_Shooter = gameObject;
+            shellExplosion.MaxDamage = _maxDamage;
+            shellExplosion.ExplosionRadius = _explosionRadius;
+            shellExplosion.Shooter = gameObject;
         }
     }
 
